@@ -22,15 +22,21 @@ body {
 
 .login-container > div {
     margin-bottom: 20px;
+
 }
 
 .login-container > div > img {
     width: 300px;
     height: auto;
 }
+
+.login-container > form > div {
+    align-items: center;
+    justify-content: center;
+}
+
 .login-container > form > div > img {
     width: 7%;
-
 }
 .login-container > form > div > input {
     width: 80%;
