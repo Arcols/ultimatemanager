@@ -13,19 +13,17 @@
     <div class="header">
         <?php include './../headfoot/header.html';?>
     </div>
-    <main>
+    <div class = "main"
         <h1>Gestion des Joueurs</h1>
-        <section>
-            <form>
-                <label for="nom">Nom du Joueur :</label>
-                <input type="text" id="nom" name="nom" required>
-                
-                <label for="equipe">Équipe :</label>
-                <input type="text" id="equipe" name="equipe" required>
-                
-                <button type="submit">Ajouter Joueur</button>
-            </form>
-        </section>
-    </main>
+        <form>
+            <label for="nom">Nom du Joueur :</label>
+            <input type="text" id="nom" name="nom" required>
+            
+            <label for="equipe">Équipe :</label>
+            <input type="text" id="equipe" name="equipe" required>
+            
+            <button type="submit">Ajouter Joueur</button>
+        </form>
+    </div>
 </body>
 </html>
