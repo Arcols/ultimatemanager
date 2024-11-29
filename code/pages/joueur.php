@@ -13,7 +13,7 @@
     <div class="header">
         <?php include './../headfoot/header.html';?>
     </div>
-    <div class = "main"
+    <div class = "main">
         <h1>Gestion des Joueurs</h1>
         <form>
             <label for="nom">Nom du Joueur :</label>
