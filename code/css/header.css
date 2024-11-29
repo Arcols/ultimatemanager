@@ -1,9 +1,40 @@
 .header {
-    /* récupérer les variables du global.css */
     background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.header img {
+
+.header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+.header a.active {
+    background-color: dodgerblue;
+    color: white;
+    margin: 0 10px;
+  }
+  
+.header a:hover{
+    font-size: 25px;
+    font-weight: bold;
+    background-color: var(--dark-primary-color);
+}
+
+.header > img {
     width: 200px;
     height: auto;
-    
+}
+
+.header div {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
 }
