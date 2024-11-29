@@ -15,15 +15,91 @@
     </div>
     <div class = "main">
         <h1>Gestion des Joueurs</h1>
-        <form>
+        <table border="1" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Licence</th>
+                    <th>Age</th>
+                    <th>Taille</th>
+                    <th>Poid</th>
+                    <th>Commentaire</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                try {
+                    // Connexion à la base de données
+                    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    // Requête pour récupérer les matchs
+                    $stmt = $pdo->query("SELECT Numéro_de_licence, Nom, Prénom, Taille,Poid,Commentaire,Statut,Date_de_naissance FROM joueur");
+
+                    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    function calculateAge($date_naissance) {
+                        $date_naissance = new DateTime($date_naissance);
+                        $aujourdhui = new DateTime();
+                        $age = $aujourdhui->diff($date_naissance)->y; // Différence en années
+                        return $age;
+                    }   
+                    // Générer les lignes dynamiquement
+                    if ($rows) {
+                        foreach ($rows as $row) {
+                            echo "<tr>
+                                    <td>" . htmlspecialchars($row['Nom']) . "</td>
+                                    <td>" . htmlspecialchars($row['Prénom']) . "</td>
+                                    <td>" . htmlspecialchars($row['Numéro_de_licence']) . "</td>
+                                    <td>" . htmlspecialchars(calculateAge($row['Date_de_naissance'])) . "</td>
+                                    <td>" . htmlspecialchars($row['Taille']) . "</td>
+                                    <td>" . htmlspecialchars($row['Poid']) . "</td>
+                                    <td>" . htmlspecialchars($row['Commentaire'] ?? 'Pas de commentaire') . "</td>
+                                    <td>" . htmlspecialchars($row['Statut']) . "</td>
+                                  </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>Aucun match trouvé.</td></tr>";
+                    }
+                } catch (PDOException $e) {
+                    echo "<tr><td colspan='5' style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+
+        <form method="POST" action="./../php/ajout_joueur.php">
+            <label for="numLic">Numéro de licence :</label>
+            <input type="text" id="numLic" name="numLic" required>
+
             <label for="nom">Nom du Joueur :</label>
             <input type="text" id="nom" name="nom" required>
             
-            <label for="equipe">Équipe :</label>
-            <input type="text" id="equipe" name="equipe" required>
-
+            <label for="prénom">Prénom du Joueur :</label>
+            <input type="text" id="prénom" name="prénom" required>
+            
+            <label for="date_naissance">Date de naissance :</label>
+            <input type="date" id="date_naissance" name="date_naissance" required>
+            
+            <label for="taille">Taille (cm) :</label>
+            <input type="number" id="taille" name="taille" required>
+            
+            <label for="poid">Poids (kg) :</label>
+            <input type="number" id="poid" name="poid" required>
+            
+            <label for="commentaire">Commentaire :</label>
+            <textarea id="commentaire" name="commentaire"></textarea>
+            
+            <label for="statut">Statut :</label>
+            <select id="statut" name="statut" required>
+                <option value="Actif">Actif</option>
+                <option value="Blessé">Blessé</option>
+                <option value="Suspendu">Suspendu</option>
+                <option value="Absent">Absent</option>
+            </select>
             <button type="submit">Ajouter Joueur</button>
-        </form>
+    </form>
     </div>
 </body>
 </html>
