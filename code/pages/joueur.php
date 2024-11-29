@@ -21,7 +21,7 @@
             
             <label for="equipe">Équipe :</label>
             <input type="text" id="equipe" name="equipe" required>
-            
+
             <button type="submit">Ajouter Joueur</button>
         </form>
     </div>
