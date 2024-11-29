@@ -1,0 +1,9 @@
+.header {
+    /* récupérer les variables du global.css */
+    background-color: var(--primary-color);
+}
+.header img {
+    width: 200px;
+    height: auto;
+    
+}

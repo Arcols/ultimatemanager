@@ -22,15 +22,21 @@ body {
 
 .login-container > div {
     margin-bottom: 20px;
+
 }
 
 .login-container > div > img {
     width: 300px;
     height: auto;
 }
+
+.login-container > form > div {
+    align-items: center;
+    justify-content: center;
+}
+
 .login-container > form > div > img {
     width: 7%;
-
 }
 .login-container > form > div > input {
     width: 80%;
@@ -43,7 +49,7 @@ body {
 .login-container > form > button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: var(--blue);
     color: white;
     border: none;
     border-radius: 5px;
@@ -51,5 +57,5 @@ body {
 }
 
 .login-container > form > button:hover {
-    background-color: #0056b3;
+    background-color: var(--dark-blue);
 }
