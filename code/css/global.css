@@ -11,35 +11,34 @@
     --dark-blue:#0056b3;
 }
 
-/* fond de couleur du body pour toutes les pages */
 body {
     background-color: var(--background-color);
 }
-/* mise en forme classique de tableaux */
+
 table {
     border-collapse: collapse;
     width: 100%;
 }
-/* th */
+
 th {
     background-color: var(--primary-color);
     color: white;
 }
-/* td */
+
 td, th {
     border: 1px solid #ddd;
     text-align: left;
     padding: 8px;
 }
-/* tr */
+
 tr:nth-child(even) {
     background-color: var(--secondary-color);
 }
-/* tr:hover */
+
 tr:hover {
     background-color: var(--dark-primary-color);
 }
-/* td:hover */
+
 td:hover {
     background-color: var(--dark-primary-color);
 }

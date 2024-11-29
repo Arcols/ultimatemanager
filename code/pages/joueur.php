@@ -22,8 +22,8 @@
                     <th>Prénom</th>
                     <th>Licence</th>
                     <th>Age</th>
-                    <th>Taille</th>
-                    <th>Poid</th>
+                    <th>Taille (m)</th>
+                    <th>Poid (kg)</th>
                     <th>Commentaire</th>
                     <th>Statut</th>
                 </tr>
@@ -68,36 +68,44 @@
                 ?>
             </tbody>
         </table>
-
+        <h2>Ajouter un joueur</h2>
         <form method="POST" action="./../php/ajout_joueur.php">
-            <label for="numLic">Numéro de licence :</label>
-            <input type="text" id="numLic" name="numLic" required>
-
-            <label for="nom">Nom du Joueur :</label>
-            <input type="text" id="nom" name="nom" required>
-            
-            <label for="prénom">Prénom du Joueur :</label>
-            <input type="text" id="prénom" name="prénom" required>
-            
-            <label for="date_naissance">Date de naissance :</label>
-            <input type="date" id="date_naissance" name="date_naissance" required>
-            
-            <label for="taille">Taille (cm) :</label>
-            <input type="number" id="taille" name="taille" required>
-            
-            <label for="poid">Poids (kg) :</label>
-            <input type="number" id="poid" name="poid" required>
-            
-            <label for="commentaire">Commentaire :</label>
-            <textarea id="commentaire" name="commentaire"></textarea>
-            
-            <label for="statut">Statut :</label>
-            <select id="statut" name="statut" required>
-                <option value="Actif">Actif</option>
-                <option value="Blessé">Blessé</option>
-                <option value="Suspendu">Suspendu</option>
-                <option value="Absent">Absent</option>
-            </select>
+            <p>
+                <label for="nom">Nom du Joueur </label>
+                <input type="text" id="nom" name="nom" required>
+            </p>
+            <p>
+                <label for="date_naissance">Date de naissance </label>
+                <input type="date" id="date_naissance" name="date_naissance" required>
+            </p>
+            <p>
+                <label for="prénom">Prénom du Joueur </label>
+                <input type="text" id="prénom" name="prénom" required>
+            </p>
+            <p>
+                <label for="taille">Taille (cm) </label>
+                <input type="number" id="taille" name="taille" required>
+            </p>
+            <p>
+                <label for="numLic">Numéro de licence </label>
+                <input type="text" id="numLic" name="numLic" required>
+            </p>
+            <p>
+                <label for="poid">Poids (kg) </label>
+                <input type="number" id="poid" name="poid" required>
+            <p>
+                <label for="commentaire">Commentaire </label>
+                <textarea id="commentaire" name="commentaire"></textarea>
+            </p>
+            <p>
+                <label for="statut">Statut </label>
+                <select id="statut" name="statut" required>
+                    <option value="Actif">Actif</option>
+                    <option value="Blessé">Blessé</option>
+                    <option value="Suspendu">Suspendu</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </p>
             <button type="submit">Ajouter Joueur</button>
     </form>
     </div>

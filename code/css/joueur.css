@@ -1,0 +1,34 @@
+
+/* form */
+/* le form est une grid 3 ligne 2 colonnes, les 2 premiers éléments font une ligne les deux suivants une autre et le dernier prend la 3eme*/
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    align-items: center;
+}
+
+/* form > input */
+form > p > input, form > p > textarea, form > p > select {
+    margin-left:5px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* form > button */
+form > button {
+    margin: 10px 0;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+}
+
+form > button:hover {
+    background-color: var(--dark-primary-color);
+}
