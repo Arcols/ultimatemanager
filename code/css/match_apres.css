@@ -1,0 +1,28 @@
+.score-input {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.score-input input {
+    width: 50px;
+    text-align: center;
+}
+.stars {
+    display: flex;
+    gap: 2px;
+}
+.stars .star {
+    font-size: 1.5em;
+    color: white;
+    cursor: pointer;
+    text-shadow: 0 0 3px black, 0 0 3px black;
+    
+}
+.stars .star.active {
+    color: gold;
+    text-shadow: 0 0 3px black, 0 0 3px black;
+}
+.submit-container {
+    margin-top: 20px;
+    text-align: center;
+}

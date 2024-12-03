@@ -60,12 +60,15 @@
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                if ($mdp_hache===$user['mdp']){
-                echo "<p style='color:green;'>Connexion réussie !</p>";
-                } else{
+                if ($mdp_hache === $user['mdp']) {
+                    // Connexion réussie
+                    session_start();
+                    $_SESSION['login'] = $login; // Stocke le login dans la session
+                    header("Location: joueur.php"); // Redirige vers la page principale
+                    exit;
+                } else {
                     echo "<p style='color:red;'>Identifiant ou mot de passe incorrect.</p>";
                 }
-                // Redirection ou autre action après la connexion réussie
             } else {
                 echo "<p style='color:red;'>Identifiant ou mot de passe incorrect.</p>";
             }
