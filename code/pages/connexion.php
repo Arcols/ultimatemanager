@@ -32,7 +32,7 @@
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Connexion à la base de données
             try {
-                $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+                $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', 'root');
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 die("<p style='color:red;'>Erreur de connexion à la base de données : " . $e->getMessage() . "</p>");

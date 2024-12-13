@@ -39,11 +39,11 @@ if (!isset($_SESSION['login'])) {
                 <?php
                 try {
                     // Connexion à la base de données
-                    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+                    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', 'root');
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                     // Requête pour récupérer les matchs
-                    $stmt = $pdo->query("SELECT Numéro_de_licence, Nom, Prénom, Taille,Poid,Commentaire,Statut,Date_de_naissance FROM joueur");
+                    $stmt = $pdo->query("SELECT Id_joueur,Numéro_de_licence, Nom, Prénom, Taille,Poid,Commentaire,Statut,Date_de_naissance FROM joueur");
 
                     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     function calculateAge($date_naissance) {
@@ -55,7 +55,8 @@ if (!isset($_SESSION['login'])) {
                     // Générer les lignes dynamiquement
                     if ($rows) {
                         foreach ($rows as $row) {
-                            echo "<tr>
+                            // Générer une ligne cliquable avec un lien vers `details_match.php`
+                            echo "<tr onclick=\"window.location.href = 'details_joueur.php?id=" . htmlspecialchars($row['Id_joueur']) . "';\">
                                     <td>" . htmlspecialchars($row['Nom']) . "</td>
                                     <td>" . htmlspecialchars($row['Prénom']) . "</td>
                                     <td>" . htmlspecialchars($row['Numéro_de_licence']) . "</td>
@@ -65,7 +66,7 @@ if (!isset($_SESSION['login'])) {
                                     <td>" . htmlspecialchars($row['Commentaire'] ?? 'Pas de commentaire') . "</td>
                                     <td>" . htmlspecialchars($row['Statut']) . "</td>
                                   </tr>";
-                        }
+                        }   
                     } else {
                         echo "<tr><td colspan='5'>Aucun match trouvé.</td></tr>";
                     }
