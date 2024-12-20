@@ -1,3 +1,40 @@
+<?php
+session_start();
+if (!isset($_SESSION['login'])) {
+    header("Location: connexion.php");
+    exit;
+}
+
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $idMatch = intval($_GET['id']);
+
+    try {
+        // Connexion à la base de données
+        $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Requête pour récupérer les informations du match
+        $stmt = $pdo->prepare("SELECT * FROM Rencontre WHERE Id_Match = :id");
+        $stmt->execute([':id' => $idMatch]);
+        $match = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($match) {
+            // Vérifier si la date du match est après la date actuelle
+            $dateMatch = new DateTime($match['Date_Heure']);
+            $currentDate = new DateTime();
+            
+            // Si la date du match est après la date actuelle, rediriger vers la page "detail_match_apres.php"
+            if ($dateMatch > $currentDate) {
+                header("Location: details_match_avant.php?id=" . $idMatch);
+                exit;
+            }
+        }
+    } catch (PDOException $e) {
+        echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>

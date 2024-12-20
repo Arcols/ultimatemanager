@@ -4,6 +4,45 @@ if (!isset($_SESSION['login'])) {
     header("Location: connexion.php");
     exit;
 }
+
+
+// Vérifier si un message d'erreur est passé dans l'URL
+if (isset($_GET['error']) && $_GET['error'] === 'titulaires') {
+    echo "
+    <script type='text/javascript'>
+        alert('Il doit y avoir exactement 7 titulaires sélectionnés.');
+    </script>
+    ";
+}
+
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $idMatch = intval($_GET['id']);
+
+    try {
+        // Connexion à la base de données
+        $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Requête pour récupérer les informations du match
+        $stmt = $pdo->prepare("SELECT * FROM Rencontre WHERE Id_Match = :id");
+        $stmt->execute([':id' => $idMatch]);
+        $match = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($match) {
+            // Vérifier si la date du match est après la date actuelle
+            $dateMatch = new DateTime($match['Date_Heure']);
+            $currentDate = new DateTime();
+            
+            // Si la date du match est après la date actuelle, rediriger vers la page "detail_match_apres.php"
+            if ($dateMatch < $currentDate) {
+                header("Location: details_match_apres.php?id=" . $idMatch);
+                exit;
+            }
+        }
+    } catch (PDOException $e) {
+        echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -54,6 +93,14 @@ if (!isset($_SESSION['login'])) {
                 echo "<p>Match " . htmlspecialchars($typeMatch) . "</p>";
                 echo "<p>Contre " . htmlspecialchars($match['Nom_adversaire']) . "</p>";
                 echo "<p>Le $dateHeure</p>";
+
+                // Formulaire pour modifier la date du match
+                echo "<form method='POST' action='./../php/enregistrer_joueurs_match.php'>";
+                echo "<input type='hidden' name='id_match' value='" . htmlspecialchars($idMatch) . "'>";
+                echo "<label for='nouvelle_date'>Nouvelle date :</label>";
+                echo "<input type='datetime-local' name='nouvelle_date' id='nouvelle_date' value='" . $dateTime->format('Y-m-d\TH:i') . "' min='" . date('Y-m-d\TH:i') . "'>";
+                echo "<button type='submit'>Modifier la date</button>";
+                echo "</form>";
             } else {
                 echo "<p>Match introuvable.</p>";
             }
@@ -86,11 +133,7 @@ if (!isset($_SESSION['login'])) {
             <tbody>
             <?php
             // Récupération des joueurs actifs
-            $stmt = $pdo->prepare("
-                SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Date_de_naissance 
-                FROM Joueur 
-                WHERE Statut = 'Actif'
-            ");
+            $stmt = $pdo->prepare("SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Date_de_naissance FROM Joueur WHERE Statut = 'Actif'");
             $stmt->execute();
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -107,15 +150,8 @@ if (!isset($_SESSION['login'])) {
                     $idJoueur = $row['Id_joueur'];
 
                     // Vérifier si ce joueur est assigné pour ce match
-                    $stmtCheck = $pdo->prepare("
-                        SELECT Poste, Role 
-                        FROM Participer 
-                        WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch
-                    ");
-                    $stmtCheck->execute([
-                        ':idJoueur' => $idJoueur,
-                        ':idMatch' => $idMatch
-                    ]);
+                    $stmtCheck = $pdo->prepare("SELECT Poste, Role FROM Participer WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch");
+                    $stmtCheck->execute([':idJoueur' => $idJoueur, ':idMatch' => $idMatch]);
                     $assigned = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
                     // Définir les variables pour l'affichage
@@ -133,15 +169,10 @@ if (!isset($_SESSION['login'])) {
                             <td>" . htmlspecialchars($row['Poid']) . "</td>
                             <td>" . htmlspecialchars($row['Commentaire'] ?? 'Pas de commentaire') . "</td>
                             <td>
-                                <input type='checkbox' 
-                                    name='choix_" . htmlspecialchars($idJoueur) . "' 
-                                    onclick='toggleComboboxes(this)' 
-                                    " . ($isAssigned ? 'checked' : '') . ">
+                                <input type='checkbox' name='choix_" . htmlspecialchars($idJoueur) . "' onclick='toggleComboboxes(this)' " . ($isAssigned ? 'checked' : '') . ">
                             </td>
                             <td>
-                                <select class='poste' 
-                                        style='display: " . ($isAssigned ? 'inline' : 'none') . ";' 
-                                        name='poste_" . htmlspecialchars($idJoueur) . "'>
+                                <select class='poste' style='display: " . ($isAssigned ? 'inline' : 'none') . ";' name='poste_" . htmlspecialchars($idJoueur) . "'>
                                     <option value='Attaquant' " . ($poste === 'Attaquant' ? 'selected' : '') . ">Attaquant</option>
                                     <option value='Milieu' " . ($poste === 'Milieu' ? 'selected' : '') . ">Milieu</option>
                                     <option value='Défenseur' " . ($poste === 'Défenseur' ? 'selected' : '') . ">Défenseur</option>
@@ -149,9 +180,7 @@ if (!isset($_SESSION['login'])) {
                                 </select>
                             </td>
                             <td>
-                                <select class='role' 
-                                        style='display: " . ($isAssigned ? 'inline' : 'none') . ";' 
-                                        name='role_" . htmlspecialchars($idJoueur) . "'>
+                                <select class='role' style='display: " . ($isAssigned ? 'inline' : 'none') . ";' name='role_" . htmlspecialchars($idJoueur) . "'>
                                     <option value='Titulaire' " . ($role === 'Titulaire' ? 'selected' : '') . ">Titulaire</option>
                                     <option value='Remplaçant' " . ($role === 'Remplaçant' ? 'selected' : '') . ">Remplaçant</option>
                                 </select>
@@ -162,12 +191,27 @@ if (!isset($_SESSION['login'])) {
                 echo "<tr><td colspan='10'>Aucun joueur actif trouvé.</td></tr>";
             }
             ?>
-
-
-
             </tbody>
         </table>
         <button type="submit">Valider</button>
     </form>
+    <!-- Formulaire caché pour la suppression -->
+    <form id="deleteForm" method="POST" action="./../php/enregistrer_joueurs_match.php">
+        <input type="hidden" name="id_match" value="<?php echo htmlspecialchars($idMatch); ?>">
+        <input type="hidden" name="action" value="supprimer">
+    </form>
+
+    <!-- Bouton de suppression avec confirmation JavaScript -->
+    <button type="button" onclick="confirmDelete()">Supprimer</button>
+
+    <script>
+        function confirmDelete() {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce match ? Cette action est irréversible.")) {
+                // Si l'utilisateur confirme, soumettre le formulaire
+                document.getElementById('deleteForm').submit();
+            }
+        }
+    </script>
+
 </body>
 </html>
