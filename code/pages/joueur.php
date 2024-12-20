@@ -39,7 +39,7 @@ if (!isset($_SESSION['login'])) {
                 <?php
                 try {
                     // Connexion à la base de données
-                    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', 'root');
+                    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                     // Requête pour récupérer les matchs
