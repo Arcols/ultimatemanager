@@ -6,48 +6,8 @@
     <title>Ultimate Manager - Détails du Match</title>
     <link rel="stylesheet" href="./../css/global.css">
     <link rel="stylesheet" href="./../css/header.css">
-    <style>
-        .score-input {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .score-input input {
-            width: 50px;
-            text-align: center;
-        }
-        .stars {
-            display: flex;
-            gap: 2px;
-        }
-        .stars .star {
-            font-size: 1.5em;
-            color: white;
-            cursor: pointer;
-            text-shadow: 0 0 3px black, 0 0 3px black;
-        }
-        .stars .star.active {
-            color: gold;
-            text-shadow: 0 0 3px black, 0 0 3px black;
-        }
-        .submit-container {
-            margin-top: 20px;
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table th, table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center;
-        }
-        table th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <link rel="stylesheet" href="./../css/match_apres.css">
+    
 </head>
 <body>
     <div class="header">

@@ -10,6 +10,16 @@ try {
         throw new Exception("ID du match non spécifié.");
     }
 
+    // Modifier la date du match si elle est fournie
+    if (!empty($_POST['nouvelle_date'])) {
+        $nouvelleDate = $_POST['nouvelle_date'];
+        $stmt = $pdo->prepare("UPDATE Rencontre SET Date_Heure = :nouvelleDate WHERE Id_Match = :idMatch");
+        $stmt->execute([
+            ':nouvelleDate' => $nouvelleDate,
+            ':idMatch' => intval($idMatch),
+        ]);
+    }
+
     // Récupérer les joueurs actuellement enregistrés pour ce match
     $stmt = $pdo->prepare("SELECT Id_joueur FROM Participer WHERE Id_Match = :idMatch");
     $stmt->execute([':idMatch' => intval($idMatch)]);
