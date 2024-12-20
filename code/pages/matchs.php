@@ -32,6 +32,15 @@ try {
 } catch (PDOException $e) {
     die("Erreur : " . htmlspecialchars($e->getMessage()));
 }
+
+if (isset($_GET['error'])) {
+    echo "<p style='color: red;'>" . htmlspecialchars($_GET['error']) . "</p>";
+}
+
+// Afficher un message de succès si présent dans l'URL
+if (isset($_GET['success'])) {
+    echo "<p style='color: green;'>Match ajouté avec succès !</p>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -102,6 +111,30 @@ try {
             ?>
             </tbody>
         </table>
+        <form method="POST" action="./../php/ajout_match.php">
+            <p>
+                <label for="date_heure">Date </label>
+                <input type="datetime-local" id="date_heure" name="date_heure" required>
+            </p>
+            <p>
+                <label for="nom_adversaires">Nom de l'equipe adverse </label>
+                <input type="text" id="nom_adversaires" name="nom_adversaires" required>
+            </p>
+            <p>
+                <label for="lieu">Lieu </label>
+                <select id="lieu" name="lieu" required>
+                    <option value="Domicile">domicile</option>
+                    <option value="Exterieur">extérieur</option>
+                </select>
+            </p>
+            <p>
+                <label for="resultat1">Resultat </label>
+                <input type="Number" id="resultat1" name="resultat1" min=0 max=15 step=1>
+                <label for="resultat2"> : </label>
+                <input type="Number" id="resultat2" name="resultat2" min=0 max=15 step=1>
+            </p>
+            <button type="submit">Ajouter Match</button>
+        </form>
     </div>
 </body>
 </html>
