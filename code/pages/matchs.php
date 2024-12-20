@@ -77,12 +77,6 @@ try {
             </thead>
             <tbody>
             <?php
-<<<<<<< Updated upstream
-                try {
-                    // Connexion à la base de données
-                        $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-=======
             if ($rows) {
                 foreach ($rows as $row) {
                     // Reformater la date et l'heure
@@ -90,7 +84,6 @@ try {
                     $date = $dateTime->format('d/m/Y');
                     $heure = $dateTime->format('H\hi');
                     $resultat = !empty($row['Résultat']) ? htmlspecialchars($row['Résultat']) : "- <b>:</b> -";
->>>>>>> Stashed changes
 
                     // Déterminer la page cible en fonction de la date
                     $detailsPage = $dateTime < $currentDateTime ? "details_match_apres.php" : "details_match_avant.php";

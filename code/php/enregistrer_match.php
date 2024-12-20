@@ -1,6 +1,6 @@
 <?php
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', 'root');
+    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Récupérer l'identifiant du match depuis le POST
@@ -10,24 +10,36 @@ try {
         throw new Exception("ID du match non spécifié.");
     }
 
-    // Parcourir les données POST pour enregistrer les joueurs sélectionnés
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'choix_') === 0) {
-            $idJoueur = substr($key, 6);
-            $poste = $_POST['poste_' . $idJoueur] ?? '';
-            $role = $_POST['role_' . $idJoueur] ?? '';
+    // Mise à jour du score dans la table "Rencontre"
+    $score1 = $_POST['score1'] ?? null;
+    $score2 = $_POST['score2'] ?? null;
 
-            // Requête pour insérer ou mettre à jour le joueur dans la table "Participer"
-            $stmt = $pdo->prepare("
-                INSERT INTO Participer (Id_joueur, Id_Match, Poste, Role)
-                VALUES (:idJoueur, :idMatch, :poste, :role)
-                ON DUPLICATE KEY UPDATE Poste = :poste, Role = :role
+    if (isset($score1, $score2)) {
+        $resultat = $score1 . ':' . $score2;
+
+        $stmtUpdateScore = $pdo->prepare("
+            UPDATE Rencontre
+            SET Résultat = :resultat
+            WHERE Id_Match = :idMatch
+        ");
+        $stmtUpdateScore->execute([
+            ':resultat' => $resultat,
+            ':idMatch' => intval($idMatch),
+        ]);
+    }
+
+    // Mise à jour des notes des joueurs dans la table "Participer"
+    if (isset($_POST['notes']) && is_array($_POST['notes'])) {
+        foreach ($_POST['notes'] as $idJoueur => $note) {
+            $stmtUpdateNote = $pdo->prepare("
+                UPDATE Participer
+                SET Note = :note
+                WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch
             ");
-            $stmt->execute([
-                ':idJoueur' => $idJoueur,
+            $stmtUpdateNote->execute([
+                ':note' => intval($note),
+                ':idJoueur' => intval($idJoueur),
                 ':idMatch' => intval($idMatch),
-                ':poste' => $poste,
-                ':role' => $role,
             ]);
         }
     }
@@ -35,6 +47,7 @@ try {
     // Redirection vers la page des détails du match après la soumission
     header("Location: ./../pages/details_match_apres.php?id=" . intval($idMatch));
     exit;
+
 } catch (PDOException $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
 } catch (Exception $e) {

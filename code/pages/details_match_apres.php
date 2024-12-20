@@ -58,18 +58,15 @@
 
         <?php
         try {
-            // Connexion à la base de données
-                $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+            $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Récupérer l'ID du match depuis l'URL
             if (!isset($_GET['id']) || empty($_GET['id'])) {
                 echo "<p style='color:red;'>Aucun match spécifié.</p>";
                 exit;
             }
             $idMatch = intval($_GET['id']);
 
-            // Récupérer les détails du match
             $stmt = $pdo->prepare("SELECT Date_Heure, Lieu, Nom_adversaire, Résultat FROM Rencontre WHERE Id_Match = :idMatch");
             $stmt->execute([':idMatch' => $idMatch]);
             $match = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -79,38 +76,33 @@
                 exit;
             }
 
-            // Formatage de la date et de l'heure
             $dateTime = new DateTime($match['Date_Heure']);
             $formattedDateTime = $dateTime->format('d/m/Y à H\hi');
 
-            // Déterminer si c'est un match à domicile ou à l'extérieur
             $lieu = $match['Lieu'] === 'domicile' ? 'Match à domicile' : 'Match à l\'extérieur';
 
             echo "<p><strong>Date :</strong> $formattedDateTime</p>";
             echo "<p><strong>Lieu :</strong> $lieu</p>";
             echo "<p><strong>Adversaire :</strong> " . htmlspecialchars($match['Nom_adversaire']) . "</p>";
 
-            // Formulaire pour les données éditables
             echo "<form method='POST' action='./../php/enregistrer_match.php'>";
-
-            // Champ caché pour transmettre l'ID du match
             echo "<input type='hidden' name='id_match' value='" . htmlspecialchars($idMatch) . "'>";
 
-            // Champ pour le résultat sous forme de deux champs séparés par ':'
+            $resultat = isset($match['Résultat']) && strpos($match['Résultat'], ':') !== false 
+            ? explode(':', $match['Résultat']) 
+            : [0, 0];
+
+            $score1 = htmlspecialchars($resultat[0]);
+            $score2 = htmlspecialchars($resultat[1]);
+
             echo "<div class='score-input'>";
-            echo "<label for='score1'>Score 1 :</label>";
-            echo "<input type='number' name='score1' id='score1' value='" . htmlspecialchars(explode(':', $match['Résultat'])[0] ?? '') . "'>";
+            echo "<label for='score1'>Score :</label>";
+            echo "<input type='number' name='score1' id='score1' value='$score1' min='0' max='15'>";
             echo "<span>:</span>";
-            echo "<input type='number' name='score2' id='score2' value='" . htmlspecialchars(explode(':', $match['Résultat'])[1] ?? '') . "'>";
+            echo "<input type='number' name='score2' id='score2' value='$score2' min='0' max='15'>";
             echo "</div>";
 
-            // Récupérer les joueurs ayant participé au match
-            $stmtParticipants = $pdo->prepare("
-                SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note
-                FROM Joueur J
-                JOIN Participer P ON J.Id_joueur = P.Id_joueur
-                WHERE P.Id_Match = :idMatch
-            ");
+            $stmtParticipants = $pdo->prepare("SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note FROM Joueur J JOIN Participer P ON J.Id_joueur = P.Id_joueur WHERE P.Id_Match = :idMatch");
             $stmtParticipants->execute([':idMatch' => $idMatch]);
             $participants = $stmtParticipants->fetchAll(PDO::FETCH_ASSOC);
 
@@ -136,7 +128,6 @@
                     $role = htmlspecialchars($participant['Role']);
                     $note = intval($participant['Note']);
 
-                    // Étoiles interactives pour la note
                     $etoiles = '';
                     for ($i = 1; $i <= 5; $i++) {
                         $activeClass = $i <= $note ? 'active' : '';
@@ -160,7 +151,6 @@
                 echo "<p>Aucun joueur n'a participé à ce match.</p>";
             }
 
-            // Bouton de validation
             echo "<div class='submit-container'>";
             echo "<button type='submit'>Valider</button>";
             echo "</div>";
@@ -178,14 +168,12 @@
                 const note = this.getAttribute('data-note');
                 const playerId = this.getAttribute('data-player-id');
 
-                // Mettre à jour l'apparence des étoiles
                 const stars = this.parentNode.querySelectorAll('.star');
                 stars.forEach(s => s.classList.remove('active'));
                 for (let i = 0; i < note; i++) {
                     stars[i].classList.add('active');
                 }
 
-                // Mettre à jour la valeur cachée de la note
                 const input = this.parentNode.nextElementSibling;
                 if (input) {
                     input.value = note;
