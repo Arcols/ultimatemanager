@@ -66,8 +66,7 @@ textarea {
     resize: vertical;
 }
 
-button {
-    background-color: #4CAF50;
+button{
     color: white;
     border: none;
     padding: 10px 20px;
@@ -77,9 +76,22 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #45a049;
+button[name="Valider"] {
+    background-color: var(--green);
 }
+
+button[name="Valider"]:hover {
+    background-color: var(--hard-green);
+}
+
+button[name="delete"] {
+    background-color: var(--red);
+}
+
+button[name="delete"]:hover {
+    background-color: var(--hard-red);
+}
+
 
 p {
     text-align: left;

@@ -131,7 +131,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 </select>
                 <button type="submit" name ="Valider">Valider</button>
                 <?php if (!$referencedInParticiper): ?>
-                    <button type="submit" name="delete" value="delete" style="background-color: red; color: white;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?');">Supprimer le joueur</button>
+                    <button type="submit" name="delete" value="delete" class="deleteButton" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?');">Supprimer le joueur</button>
                 <?php endif; ?>
             </form>
         <?php else: ?>
