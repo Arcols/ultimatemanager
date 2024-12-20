@@ -1,7 +1,6 @@
 <?php
-echo('Coucou');
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', 'root');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Récupérer l'identifiant du match depuis le POST
@@ -11,10 +10,19 @@ try {
         throw new Exception("ID du match non spécifié.");
     }
 
-    // Parcourir les données POST pour enregistrer les joueurs sélectionnés
+    // Récupérer les joueurs actuellement enregistrés pour ce match
+    $stmt = $pdo->prepare("SELECT Id_joueur FROM Participer WHERE Id_Match = :idMatch");
+    $stmt->execute([':idMatch' => intval($idMatch)]);
+    $joueursExistants = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // Préparer une liste des joueurs sélectionnés dans le formulaire
+    $joueursSelectionnes = [];
     foreach ($_POST as $key => $value) {
         if (strpos($key, 'choix_') === 0) {
             $idJoueur = substr($key, 6);
+            $joueursSelectionnes[] = $idJoueur;
+
+            // Récupérer les autres champs
             $poste = $_POST['poste_' . $idJoueur] ?? '';
             $role = $_POST['role_' . $idJoueur] ?? '';
 
@@ -29,6 +37,18 @@ try {
                 ':idMatch' => intval($idMatch),
                 ':poste' => $poste,
                 ':role' => $role,
+            ]);
+        }
+    }
+
+    // Détecter les joueurs qui ne sont plus sélectionnés et les supprimer
+    $joueursASupprimer = array_diff($joueursExistants, $joueursSelectionnes);
+    if (!empty($joueursASupprimer)) {
+        $stmt = $pdo->prepare("DELETE FROM Participer WHERE Id_Match = :idMatch AND Id_joueur = :idJoueur");
+        foreach ($joueursASupprimer as $idJoueurASupprimer) {
+            $stmt->execute([
+                ':idMatch' => intval($idMatch),
+                ':idJoueur' => $idJoueurASupprimer,
             ]);
         }
     }

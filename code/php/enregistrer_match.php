@@ -1,30 +1,43 @@
 <?php
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', 'root');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Récupérer les données POST
-    $idMatch = $_POST['idMatch'] ?? null;
-    $resultat = $_POST['resultat'] ?? '';
-    $notes = $_POST['notes'] ?? [];
+    // Récupérer l'identifiant du match depuis le POST
+    $idMatch = $_POST['id_match'] ?? null;
 
     if (!$idMatch) {
         throw new Exception("ID du match non spécifié.");
     }
 
-    // Mettre à jour le résultat du match
-    $stmt = $pdo->prepare("UPDATE Rencontre SET Résultat = :resultat WHERE Id_Match = :idMatch");
-    $stmt->execute([':resultat' => $resultat, ':idMatch' => intval($idMatch)]);
+    // Parcourir les données POST pour enregistrer les joueurs sélectionnés
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'choix_') === 0) {
+            $idJoueur = substr($key, 6);
+            $poste = $_POST['poste_' . $idJoueur] ?? '';
+            $role = $_POST['role_' . $idJoueur] ?? '';
 
-    // Mettre à jour les notes des joueurs
-    $stmtNote = $pdo->prepare("UPDATE Participer SET Note = :note WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch");
-    foreach ($notes as $idJoueur => $note) {
-        $stmtNote->execute([':note' => $note, ':idJoueur' => $idJoueur, ':idMatch' => intval($idMatch)]);
+            // Requête pour insérer ou mettre à jour le joueur dans la table "Participer"
+            $stmt = $pdo->prepare("
+                INSERT INTO Participer (Id_joueur, Id_Match, Poste, Role)
+                VALUES (:idJoueur, :idMatch, :poste, :role)
+                ON DUPLICATE KEY UPDATE Poste = :poste, Role = :role
+            ");
+            $stmt->execute([
+                ':idJoueur' => $idJoueur,
+                ':idMatch' => intval($idMatch),
+                ':poste' => $poste,
+                ':role' => $role,
+            ]);
+        }
     }
 
-    echo "Données enregistrées avec succès.";
+    // Redirection vers la page des détails du match après la soumission
+    header("Location: ./../pages/details_match_apres.php?id=" . intval($idMatch));
+    exit;
 } catch (PDOException $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
 } catch (Exception $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
 }
+?>

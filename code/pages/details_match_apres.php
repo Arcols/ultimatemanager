@@ -1,10 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("Location: connexion.php");
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,8 +6,48 @@ if (!isset($_SESSION['login'])) {
     <title>Ultimate Manager - Détails du Match</title>
     <link rel="stylesheet" href="./../css/global.css">
     <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/match_apres.css">
-
+    <style>
+        .score-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .score-input input {
+            width: 50px;
+            text-align: center;
+        }
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+        .stars .star {
+            font-size: 1.5em;
+            color: white;
+            cursor: pointer;
+            text-shadow: 0 0 3px black, 0 0 3px black;
+        }
+        .stars .star.active {
+            color: gold;
+            text-shadow: 0 0 3px black, 0 0 3px black;
+        }
+        .submit-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -61,17 +94,19 @@ if (!isset($_SESSION['login'])) {
             echo "<form method='POST' action='./../php/enregistrer_match.php'>";
 
             // Champ caché pour transmettre l'ID du match
-            echo "<input type='hidden' name='idMatch' value='" . htmlspecialchars($idMatch) . "'>";
+            echo "<input type='hidden' name='id_match' value='" . htmlspecialchars($idMatch) . "'>";
 
-            // Champ pour le résultat
+            // Champ pour le résultat sous forme de deux champs séparés par ':'
             echo "<div class='score-input'>";
-            echo "<label for='resultat'>Résultat :</label>";
-            echo "<input type='text' name='resultat' id='resultat' value='" . htmlspecialchars($match['Résultat'] ?? '') . "'>";
+            echo "<label for='score1'>Score 1 :</label>";
+            echo "<input type='number' name='score1' id='score1' value='" . htmlspecialchars(explode(':', $match['Résultat'])[0] ?? '') . "'>";
+            echo "<span>:</span>";
+            echo "<input type='number' name='score2' id='score2' value='" . htmlspecialchars(explode(':', $match['Résultat'])[1] ?? '') . "'>";
             echo "</div>";
 
             // Récupérer les joueurs ayant participé au match
             $stmtParticipants = $pdo->prepare("
-                SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.T_R AS Role, P.Note
+                SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note
                 FROM Joueur J
                 JOIN Participer P ON J.Id_joueur = P.Id_joueur
                 WHERE P.Id_Match = :idMatch
@@ -81,7 +116,7 @@ if (!isset($_SESSION['login'])) {
 
             if ($participants) {
                 echo "<h2>Joueurs ayant participé au match</h2>";
-                echo "<table border='1' style='border-collapse: collapse; width: 100%; margin-top: 20px;'>
+                echo "<table>
                         <thead>
                             <tr>
                                 <th>Nom</th>
