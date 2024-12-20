@@ -91,7 +91,7 @@ if (!isset($_SESSION['login'])) {
                 <input type="text" id="prénom" name="prénom" required>
             </p>
             <p>
-                <label for="taille">Taille (cm) </label>
+                <label for="taille">Taille (m) </label>
                 <input type="number" id="taille" name="taille" required>
             </p>
             <p>

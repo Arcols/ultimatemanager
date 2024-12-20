@@ -15,15 +15,31 @@ function calculateAge($date_naissance) {
     }
 }
 
+// Vérifier si l'ID du joueur est référencé dans la table `participer`
+function aParticipéAUnMatch($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participer WHERE id_joueur = :id");
+    $stmt->execute([':id' => $idJoueur]);
+    return $stmt->fetchColumn() > 0;
+}
+
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $IdJoueur = intval($_GET['id']);
 
     try {
+        // connection à la base de donnée
         $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        $referencedInParticiper = false;
+
+        if (aParticipéAUnMatch($pdo, $IdJoueur)) {
+            $referencedInParticiper = true;
+        }
+
         $stmt = $pdo->prepare("SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Date_de_naissance, Statut 
                                FROM joueur WHERE Id_joueur = :id");
+
+        // je récupère l'id du joueur pour afficher ses informations et les prochaines requetes
         $stmt->execute([':id' => $IdJoueur]);
         $joueur = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -37,24 +53,30 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $poid = $_POST['poid'];
             $commentaire = $_POST['commentaire'];
             $status = $_POST['status'];
-
-            $updateStmt = $pdo->prepare("UPDATE joueur SET Numéro_de_licence = :licence, Taille = :taille, Poid = :poid, Commentaire = :commentaire, Statut = :status WHERE Id_joueur = :id");
-            $updateStmt->execute([
-                
-                ':licence' => $licence,
-                ':taille' => $taille,
-                ':poid' => $poid,
-                ':commentaire' => $commentaire,
-                ':status' => $status,
-                ':id' => $IdJoueur
-            ]);
-
+            // Validation d'un joueur
+            if(isset($_POST['Valider'])){
+                $updateStmt = $pdo->prepare("UPDATE joueur SET Numéro_de_licence = :licence, Taille = :taille, Poid = :poid, Commentaire = :commentaire, Statut = :status WHERE Id_joueur = :id");
+                $updateStmt->execute([      
+                    ':licence' => $licence,
+                    ':taille' => $taille,
+                    ':poid' => $poid,
+                    ':commentaire' => $commentaire,
+                    ':status' => $status,
+                    ':id' => $IdJoueur
+                ]);
+            }
+            // Suppression d'un joueur
+            if(isset($_POST['delete'])){
+                $deleteStmt = $pdo->prepare("DELETE FROM joueur WHERE Id_joueur = :id");
+                $deleteStmt->execute([':id' => $IdJoueur]);
+                header("Location: joueur.php");
+                exit;
+            }
             $joueur['Numéro_de_licence'] = $licence;
             $joueur['Taille'] = $taille;
             $joueur['Poid'] = $poid;
             $joueur['Commentaire'] = $commentaire;
             $joueur['Statut'] = $status;
-
             $message = "<p style='color:green;'>Les informations ont été mises à jour avec succès.</p>";
         }
     } catch (PDOException $e) {
@@ -81,6 +103,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     </div>
     <main>
         <?php if (!empty($joueur)): ?>
+            <?= $message ?>
             <h1><?= htmlspecialchars($joueur['Nom'], ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($joueur['Prénom'], ENT_QUOTES, 'UTF-8') ?></h1>
                 <form method="POST" action="">
 
@@ -106,9 +129,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     <option value="suspendu" <?= $joueur['Statut'] === 'suspendu' ? 'selected' : '' ?>>Suspendu</option>
                     <option value="absent" <?= $joueur['Statut'] === 'absent' ? 'selected' : '' ?>>Absent</option>
                 </select>
-                <button type="submit">Valider</button>
-                <?= $message ?>
-
+                <button type="submit" name ="Valider">Valider</button>
+                <?php if (!$referencedInParticiper): ?>
+                    <button type="submit" name="delete" value="delete" style="background-color: red; color: white;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?');">Supprimer le joueur</button>
+                <?php endif; ?>
             </form>
         <?php else: ?>
             <p style="text-align:center;">Aucun joueur trouvé.</p>
