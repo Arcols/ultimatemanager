@@ -1,18 +1,115 @@
 <?php
 session_start();
-
-// Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
 if (!isset($_SESSION['login'])) {
     header("Location: connexion.php");
     exit;
+}
+
+function getMatchsStats($pdo) {
+    $stmt = $pdo->query("SELECT 
+                            SUM(CASE WHEN résultat LIKE '%:%' AND CAST(SUBSTRING_INDEX(résultat, ':', 1) AS UNSIGNED) > CAST(SUBSTRING_INDEX(résultat, ':', -1) AS UNSIGNED) THEN 1 ELSE 0 END) AS gagnés,
+                            SUM(CASE WHEN résultat LIKE '%:%' AND CAST(SUBSTRING_INDEX(résultat, ':', 1) AS UNSIGNED) = CAST(SUBSTRING_INDEX(résultat, ':', -1) AS UNSIGNED) THEN 1 ELSE 0 END) AS nuls,
+                            SUM(CASE WHEN résultat LIKE '%:%' AND CAST(SUBSTRING_INDEX(résultat, ':', 1) AS UNSIGNED) < CAST(SUBSTRING_INDEX(résultat, ':', -1) AS UNSIGNED) THEN 1 ELSE 0 END) AS perdus
+                         FROM rencontre");
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function getPostePréféré($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT Poste, COUNT(*) as Occurrence 
+                           FROM participer 
+                           WHERE id_joueur = :id 
+                           GROUP BY Poste 
+                           ORDER BY Occurrence DESC 
+                           LIMIT 1");
+    $stmt->execute([':id' => $idJoueur]);
+    return $stmt->fetchColumn();
+}
+
+function getNombreDeTitularisation($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participer WHERE id_joueur = :id AND Role = 0");
+    $stmt->execute([':id' => $idJoueur]);
+    return $stmt->fetchColumn();
+}
+
+function getNombreDeRemplacements($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participer WHERE id_joueur = :id AND Role = 1");
+    $stmt->execute([':id' => $idJoueur]);
+    return $stmt->fetchColumn();
+}
+
+function getEvaluationMoyenne($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT AVG(Note) FROM participer WHERE id_joueur = :id");
+    $stmt->execute([':id' => $idJoueur]);
+    $result = $stmt->fetchColumn();
+    return $result !== null ? $result : 0;
+}
+
+function getMatchsGagnés($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT id_match FROM participer WHERE id_joueur = :id");
+    $stmt->execute([':id' => $idJoueur]);
+    $matches = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    if (empty($matches)) {
+        return 0;
+    }
+
+    $placeholders = str_repeat('?,', count($matches) - 1) . '?';
+    $stmt = $pdo->prepare("SELECT résultat FROM rencontre WHERE id_match IN ($placeholders)");
+    $stmt->execute($matches);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $gagnés = 0;
+    foreach ($results as $result) {
+        list($scoreEquipe, $scoreAdversaire) = explode(':', $result['résultat']);
+        if ((int)$scoreEquipe > (int)$scoreAdversaire) {
+            $gagnés++;
+        }
+    }
+
+    return count($results) > 0 ? ($gagnés / count($results)) * 100 : 0;
+}
+
+function getNombreDeSelectionConsecutive($pdo, $idJoueur) {
+    $stmt = $pdo->prepare("SELECT r.Date_Heure 
+                           FROM participer p
+                           JOIN rencontre r ON p.id_match = r.id_match
+                           WHERE p.id_joueur = :id
+                           ORDER BY r.Date_Heure ASC");
+    $stmt->execute([':id' => $idJoueur]);
+    $dates = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    if (empty($dates)) {
+        return 0;
+    }
+
+    $maxConsecutive = 0;
+    $currentConsecutive = 1;
+
+    for ($i = 1; $i < count($dates); $i++) {
+        $previousDate = new DateTime($dates[$i - 1]);
+        $currentDate = new DateTime($dates[$i]);
+        $interval = $previousDate->diff($currentDate)->days;
+        if ($interval == 1) {
+            $currentConsecutive++;
+        } else {
+            if ($currentConsecutive > $maxConsecutive) {
+                $maxConsecutive = $currentConsecutive;
+            }
+            $currentConsecutive = 1;
+        }
+    }
+
+    return max($maxConsecutive, $currentConsecutive);
 }
 
 try {
     $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Déterminer le filtre sélectionné
-    $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : 'tous';
+    $stmt = $pdo->query("SELECT DISTINCT j.Id_joueur, j.Nom, j.Prénom, j.Statut 
+                         FROM joueur j
+                         JOIN participer p ON j.Id_joueur = p.id_joueur");
+    $joueurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Construire la requête en fonction du filtre
     $query = "SELECT Id_Match, Date_Heure, Lieu, Nom_adversaire, Résultat FROM rencontre";
@@ -23,118 +120,9 @@ try {
     }
     $query .= " ORDER BY Date_Heure ASC"; // Tri par date croissante
 
-    // Exécuter la requête
-    $stmt = $pdo->query($query);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Définir l'heure actuelle
-    $currentDateTime = new DateTime();
+    include 'statistiques.html.php';
 } catch (PDOException $e) {
-    die("Erreur : " . htmlspecialchars($e->getMessage()));
-}
-
-if (isset($_GET['error'])) {
-    echo "<p style='color: red;'>" . htmlspecialchars($_GET['error']) . "</p>";
-}
-
-// Afficher un message de succès si présent dans l'URL
-if (isset($_GET['success'])) {
-    echo "<p style='color: green;'>Match ajouté avec succès !</p>";
+    echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
+    exit;
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Manager - Matchs</title>
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/joueur.css">
-    <style>
-        table tbody tr {
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <?php include './../headfoot/header.html'; ?>
-    </div>
-    <div class="main">
-        <h1>Gestion des Matchs</h1>
-
-        <!-- Formulaire de filtre -->
-        <form method="GET" action="">
-            <label for="filtre">Afficher :</label>
-            <select name="filtre" id="filtre" onchange="this.form.submit()">
-                <option value="tous" <?php if ($filtre === 'tous') echo 'selected'; ?>>Tous les matchs</option>
-                <option value="passes" <?php if ($filtre === 'passes') echo 'selected'; ?>>Matchs passés</option>
-                <option value="avenir" <?php if ($filtre === 'avenir') echo 'selected'; ?>>Matchs à venir</option>
-            </select>
-        </form>
-
-        <table border="1" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Heure</th>
-                    <th>Lieu</th>
-                    <th>Adversaires</th>
-                    <th>Résultat</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            if ($rows) {
-                foreach ($rows as $row) {
-                    // Reformater la date et l'heure
-                    $dateTime = new DateTime($row['Date_Heure']);
-                    $date = $dateTime->format('d/m/Y');
-                    $heure = $dateTime->format('H\hi');
-                    $resultat = !empty($row['Résultat']) ? htmlspecialchars($row['Résultat']) : "- <b>:</b> -";
-
-                    // Déterminer la page cible en fonction de la date
-                    $detailsPage = $dateTime < $currentDateTime ? "details_match_apres.php" : "details_match_avant.php";
-
-                    echo "<tr onclick=\"window.location.href='$detailsPage?id=" . $row['Id_Match'] . "'\">
-                            <td>" . htmlspecialchars($date) . "</td>
-                            <td>" . htmlspecialchars($heure) . "</td>
-                            <td>" . htmlspecialchars($row['Lieu']) . "</td>
-                            <td>" . htmlspecialchars($row['Nom_adversaire']) . "</td>
-                            <td>" . $resultat . "</td>
-                        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='5'>Aucun match trouvé.</td></tr>";
-            }
-            ?>
-            </tbody>
-        </table>
-        <form method="POST" action="./../php/ajout_match.php">
-            <p>
-                <label for="date_heure">Date </label>
-                <input type="datetime-local" id="date_heure" name="date_heure" required>
-            </p>
-            <p>
-                <label for="nom_adversaires">Nom de l'equipe adverse </label>
-                <input type="text" id="nom_adversaires" name="nom_adversaires" required>
-            </p>
-            <p>
-                <label for="lieu">Lieu </label>
-                <select id="lieu" name="lieu" required>
-                    <option value="Domicile">domicile</option>
-                    <option value="Exterieur">extérieur</option>
-                </select>
-            </p>
-            <p>
-                <label for="resultat1">Resultat </label>
-                <input type="Number" id="resultat1" name="resultat1" min=0 max=15 step=1>
-                <label for="resultat2"> : </label>
-                <input type="Number" id="resultat2" name="resultat2" min=0 max=15 step=1>
-            </p>
-            <button type="submit">Ajouter Match</button>
-        </form>
-    </div>
-</body>
-</html>
