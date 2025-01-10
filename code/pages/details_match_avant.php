@@ -133,7 +133,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <tbody>
             <?php
             // Récupération des joueurs actifs
-            $stmt = $pdo->prepare("SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Date_de_naissance FROM Joueur WHERE Statut = 'Actif'");
+            $stmt = $pdo->prepare("SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Date_de_naissance FROM joueur WHERE Statut = 'Actif'");
             $stmt->execute();
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -150,7 +150,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     $idJoueur = $row['Id_joueur'];
 
                     // Vérifier si ce joueur est assigné pour ce match
-                    $stmtCheck = $pdo->prepare("SELECT Poste, Role FROM Participer WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch");
+                    $stmtCheck = $pdo->prepare("SELECT Poste, Role FROM participer WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch");
                     $stmtCheck->execute([':idJoueur' => $idJoueur, ':idMatch' => $idMatch]);
                     $assigned = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 

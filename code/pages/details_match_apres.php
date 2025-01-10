@@ -99,7 +99,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             echo "<input type='number' name='score2' id='score2' value='$score2' min='0' max='15'>";
             echo "</div>";
 
-            $stmtParticipants = $pdo->prepare("SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note FROM Joueur J JOIN Participer P ON J.Id_joueur = P.Id_joueur WHERE P.Id_Match = :idMatch");
+            $stmtParticipants = $pdo->prepare("SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note FROM joueur J JOIN Participer P ON J.Id_joueur = P.Id_joueur WHERE P.Id_Match = :idMatch");
             $stmtParticipants->execute([':idMatch' => $idMatch]);
             $participants = $stmtParticipants->fetchAll(PDO::FETCH_ASSOC);
 
