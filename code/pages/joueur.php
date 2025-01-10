@@ -115,7 +115,7 @@ if (!isset($_SESSION['login'])) {
                 </select>
             </p>
             <button type="submit">Ajouter Joueur</button>
-    </form>
+        </form>
     </div>
 </body>
 </html>
