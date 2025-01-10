@@ -32,7 +32,7 @@ try {
     if (isset($_POST['notes']) && is_array($_POST['notes'])) {
         foreach ($_POST['notes'] as $idJoueur => $note) {
             $stmtUpdateNote = $pdo->prepare("
-                UPDATE Participer
+                UPDATE participer
                 SET Note = :note
                 WHERE Id_joueur = :idJoueur AND Id_Match = :idMatch
             ");
