@@ -8,14 +8,14 @@ if (!isset($_SESSION['login'])) {
 }
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+    $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Déterminer le filtre sélectionné
     $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : 'tous';
 
     // Construire la requête en fonction du filtre
-    $query = "SELECT Id_Match, Date_Heure, Lieu, Nom_adversaire, Résultat FROM Rencontre";
+    $query = "SELECT Id_Match, Date_Heure, Lieu, Nom_adversaire, Résultat FROM rencontre";
     if ($filtre === 'passes') {
         $query .= " WHERE Date_Heure < NOW()";
     } elseif ($filtre === 'avenir') {

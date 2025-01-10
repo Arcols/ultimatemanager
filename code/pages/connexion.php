@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Manager - Connexion</title>
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/connexion.css">
+    <title>Ultimate Manager - Connexion 2</title>
+    <link rel="stylesheet" type="text/css" href="./../css/global.css">
+    <link rel="stylesheet" type="text/css" href="./../css/connexion.css">
 </head>
 <body>
     <div class="login-container">
@@ -32,7 +32,7 @@
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Connexion à la base de données
             try {
-                $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+                $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 die("<p style='color:red;'>Erreur de connexion à la base de données : " . $e->getMessage() . "</p>");

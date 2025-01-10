@@ -1,7 +1,7 @@
 <?php
 // Connexion à la base de données
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+    $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
             ]);
 
-            // Rediriger vers joueur.php après ajout avec un message de succès
+            // Rediriger vers matchs.php après ajout avec un message de succès
             header('Location: ./../pages/matchs.php?success=1');
             exit;
         } catch (PDOException $e) {
