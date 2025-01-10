@@ -14,7 +14,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Requête pour récupérer les informations du match
-        $stmt = $pdo->prepare("SELECT * FROM Rencontre WHERE Id_Match = :id");
+        $stmt = $pdo->prepare("SELECT * FROM rencontre WHERE Id_Match = :id");
         $stmt->execute([':id' => $idMatch]);
         $match = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -64,7 +64,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             }
             $idMatch = intval($_GET['id']);
 
-            $stmt = $pdo->prepare("SELECT Date_Heure, Lieu, Nom_adversaire, Résultat FROM Rencontre WHERE Id_Match = :idMatch");
+            $stmt = $pdo->prepare("SELECT Date_Heure, Lieu, Nom_adversaire, Résultat FROM rencontre WHERE Id_Match = :idMatch");
             $stmt->execute([':idMatch' => $idMatch]);
             $match = $stmt->fetch(PDO::FETCH_ASSOC);
 

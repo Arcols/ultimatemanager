@@ -18,7 +18,7 @@ try {
         $stmt->execute([':idMatch' => intval($idMatch)]);
 
         // Supprimer le match
-        $stmt = $pdo->prepare("DELETE FROM Rencontre WHERE Id_Match = :idMatch");
+        $stmt = $pdo->prepare("DELETE FROM rencontre WHERE Id_Match = :idMatch");
         $stmt->execute([':idMatch' => intval($idMatch)]);
 
         // Redirection après la suppression
@@ -29,7 +29,7 @@ try {
     // Modifier la date du match si elle est fournie
     if (!empty($_POST['nouvelle_date'])) {
         $nouvelleDate = $_POST['nouvelle_date'];
-        $stmt = $pdo->prepare("UPDATE Rencontre SET Date_Heure = :nouvelleDate WHERE Id_Match = :idMatch");
+        $stmt = $pdo->prepare("UPDATE rencontre SET Date_Heure = :nouvelleDate WHERE Id_Match = :idMatch");
         $stmt->execute([
             ':nouvelleDate' => $nouvelleDate,
             ':idMatch' => intval($idMatch),

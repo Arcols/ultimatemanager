@@ -10,7 +10,7 @@ try {
         throw new Exception("ID du match non spécifié.");
     }
 
-    // Mise à jour du score dans la table "Rencontre"
+    // Mise à jour du score dans la table "rencontre"
     $score1 = $_POST['score1'] ?? null;
     $score2 = $_POST['score2'] ?? null;
 
@@ -18,7 +18,7 @@ try {
         $resultat = $score1 . ':' . $score2;
 
         $stmtUpdateScore = $pdo->prepare("
-            UPDATE Rencontre
+            UPDATE rencontre
             SET Résultat = :resultat
             WHERE Id_Match = :idMatch
         ");
