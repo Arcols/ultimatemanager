@@ -45,7 +45,7 @@ try {
     }
 
     // Redirection vers la page des détails du match après la soumission
-    header("Location: ./../pages/matchs.php?id=" . intval($idMatch));
+    header("Location: ./../pages/matchs.html.php?id=" . intval($idMatch));
     exit;
 
 } catch (PDOException $e) {

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($resultat1) && !empty($resultat2) && is_numeric($resultat1) && is_numeric($resultat2)) {
             $resultat = $resultat1 . " : " . $resultat2;
         } elseif (empty($resultat1) || empty($resultat2)) {
-            header('Location: ./../pages/matchs.php?error=Veuillez remplir les deux champs résultat ou aucun des deux');
+            header('Location: ./../pages/matchs.html.php?error=Veuillez remplir les deux champs résultat ou aucun des deux');
             exit;
         }else{
             $resultat = null; // Attribuer null si un des champs est vide ou non valide
@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
             ]);
 
-            // Rediriger vers matchs.php après ajout avec un message de succès
-            header('Location: ./../pages/matchs.php?success=1');
+            // Rediriger vers matchs.html.php après ajout avec un message de succès
+            header('Location: ./../pages/matchs.html.php?success=1');
             exit;
         } catch (PDOException $e) {
             echo "<p style='color: red;'>Erreur lors de l'ajout : " . htmlspecialchars($e->getMessage()) . "</p>";
