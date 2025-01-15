@@ -35,7 +35,7 @@
                 $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                die("<p style='color:red;'>Erreur de connexion à la base de données : " . $e->getMessage() . "</p>");
+                die("<p>'>Erreur de connexion à la base de données : " . $e->getMessage() . "</p>");
             }
 
             // Récupérer les données du formulaire
@@ -67,10 +67,10 @@
                     header("Location: joueur.php"); // Redirige vers la page principale
                     exit;
                 } else {
-                    echo "<p style='color:red;'>Identifiant ou mot de passe incorrect.</p>";
+                    echo "<p>'>Identifiant ou mot de passe incorrect.</p>";
                 }
             } else {
-                echo "<p style='color:red;'>Identifiant ou mot de passe incorrect.</p>";
+                echo "<p>'>Identifiant ou mot de passe incorrect.</p>";
             }
         }
         ?>

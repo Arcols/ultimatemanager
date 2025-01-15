@@ -14,7 +14,7 @@ try {
     if (isset($_POST['action']) && $_POST['action'] === 'supprimer') {
         echo("Supprimer");
         // Supprimer les joueurs associés à ce match
-        $stmt = $pdo->prepare("DELETE FROM Participer WHERE Id_Match = :idMatch");
+        $stmt = $pdo->prepare("DELETE FROM participer WHERE Id_Match = :idMatch");
         $stmt->execute([':idMatch' => intval($idMatch)]);
 
         // Supprimer le match
@@ -102,7 +102,6 @@ try {
     exit;  // Assurez-vous d'ajouter exit ici aussi
 } catch (PDOException $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
-    die("Erreur SQL : " . $e->getMessage());
 } catch (Exception $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
 }

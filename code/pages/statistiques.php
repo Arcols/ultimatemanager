@@ -129,7 +129,7 @@ try {
     $pourcentageNuls = $totalMatchs > 0 ? ($matchsStats['nuls'] / $totalMatchs) * 100 : 0;
     $pourcentagePerdus = $totalMatchs > 0 ? ($matchsStats['perdus'] / $totalMatchs) * 100 : 0;
 } catch (PDOException $e) {
-    echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
+    echo "<p>'>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
     exit;
 }
 ?>

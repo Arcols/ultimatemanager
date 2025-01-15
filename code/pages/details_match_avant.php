@@ -40,7 +40,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             }
         }
     } catch (PDOException $e) {
-        echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p>'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
     }
 }
 ?>
@@ -77,7 +77,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
         try {
             // Connexion à la base de données
-            $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+            $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Requête pour récupérer les informations du match
@@ -105,7 +105,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 echo "<p>Match introuvable.</p>";
             }
         } catch (PDOException $e) {
-            echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<p>'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
         }
     } else {
         echo "<p>Identifiant de match invalide.</p>";

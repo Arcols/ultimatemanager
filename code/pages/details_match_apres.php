@@ -30,7 +30,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             }
         }
     } catch (PDOException $e) {
-        echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p>'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
     }
 }
 ?>
@@ -55,11 +55,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
         <?php
         try {
-            $pdo = new PDO('mysql:host=localhost;dbname=ultimatemanagerbdd;charset=utf8mb4', 'root', '');
+            $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             if (!isset($_GET['id']) || empty($_GET['id'])) {
-                echo "<p style='color:red;'>Aucun match spécifié.</p>";
+                echo "<p>'>Aucun match spécifié.</p>";
                 exit;
             }
             $idMatch = intval($_GET['id']);
@@ -69,7 +69,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $match = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$match) {
-                echo "<p style='color:red;'>Match introuvable.</p>";
+                echo "<p>'>Match introuvable.</p>";
                 exit;
             }
 
@@ -99,7 +99,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             echo "<input type='number' name='score2' id='score2' value='$score2' min='0' max='15'>";
             echo "</div>";
 
-            $stmtParticipants = $pdo->prepare("SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note FROM joueur J JOIN Participer P ON J.Id_joueur = P.Id_joueur WHERE P.Id_Match = :idMatch");
+            $stmtParticipants = $pdo->prepare("SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note FROM joueur J JOIN participer P ON J.Id_joueur = P.Id_joueur WHERE P.Id_Match = :idMatch");
             $stmtParticipants->execute([':idMatch' => $idMatch]);
             $participants = $stmtParticipants->fetchAll(PDO::FETCH_ASSOC);
 
@@ -154,7 +154,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
             echo "</form>";
         } catch (PDOException $e) {
-            echo "<p style='color:red;'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<p>'>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
         }
         ?>
     </div>
