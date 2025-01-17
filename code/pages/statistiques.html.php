@@ -44,6 +44,7 @@
                 </tr>
             </thead>
             <tbody>
+
                 <!-- Affichage des données de chaque joueur -->
                 <?php foreach ($joueurs as $joueur): ?>
                     <tr>
