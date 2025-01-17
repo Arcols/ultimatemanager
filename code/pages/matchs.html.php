@@ -7,21 +7,19 @@
     <link rel="stylesheet" href="./../css/global.css">
     <link rel="stylesheet" href="./../css/header.css">
     <link rel="stylesheet" href="./../css/joueur.css">
-    <style>
-        table tbody tr {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
+    <!-- Inclusion de l'en-tête du site -->
     <div class="header">
         <?php include './../headfoot/header.html'; ?>
     </div>
+    
     <div class="main">
+        <!-- Inclusion du fichier PHP qui récupère les matchs -->
         <?php include './../php/matchs.php'; ?>
-        <h1>Gestion des Matchs</h1>
 
-        <!-- Formulaire de filtre -->
+        <h1>Gestion des Matchs</h1>
+        <!-- Formulaire de filtre pour afficher les matchs selon le type -->
         <form method="GET" action="">
             <label for="filtre">Afficher :</label>
             <select name="filtre" id="filtre" onchange="this.form.submit()">
@@ -40,6 +38,7 @@
             <p style='color: green;'><?php echo $successMessage; ?></p>
         <?php endif; ?>
 
+        <!-- Table des matchs -->
         <table border="1" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
             <thead>
                 <tr>
@@ -52,6 +51,7 @@
             </thead>
             <tbody>
             <?php
+            // Affichage des matchs
             if ($rows) {
                 foreach ($rows as $row) {
                     // Reformater la date et l'heure
@@ -60,9 +60,10 @@
                     $heure = $dateTime->format('H\hi');
                     $resultat = !empty($row['Résultat']) ? htmlspecialchars($row['Résultat']) : "- <b>:</b> -";
 
-                    // Déterminer la page cible en fonction de la date
+                    // Déterminer la page cible en fonction de la date (avant ou après le match)
                     $detailsPage = $dateTime < $currentDateTime ? "details_apres_match.html.php" : "details_avant_match.html.php";
 
+                    // Affichage d'une ligne pour chaque match, avec redirection vers la page de détails
                     echo "<tr onclick=\"window.location.href='$detailsPage?id=" . $row['Id_Match'] . "'\">
                             <td>" . htmlspecialchars($date) . "</td>
                             <td>" . htmlspecialchars($heure) . "</td>
@@ -72,6 +73,7 @@
                         </tr>";
                 }
             } else {
+                // Affichage d'un message si aucun match n'est trouvé
                 echo "<tr><td colspan='5'>Aucun match trouvé.</td></tr>";
             }
             ?>

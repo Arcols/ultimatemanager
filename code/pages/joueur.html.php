@@ -12,12 +12,18 @@
     <div class="header">
         <?php include './../headfoot/header.html'; ?>
     </div>
+    
     <div class="main">
+        <!-- Titre de la page -->
         <h1>Gestion des Joueurs</h1>
+
+        <!-- Inclusion du fichier PHP qui récupère les joueurs -->
         <?php include './../php/joueur.php'; ?>
+
         <?php if ($error): ?>
             <p style="color: red;"><?= $error ?></p>
         <?php else: ?>
+            <!-- Table des joueurs -->
             <table border="1" style="border-collapse: collapse; width: 100%;">
                 <thead>
                     <tr>
@@ -32,6 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                <!-- Affichage des informations de chaque joueur -->
                 <?php foreach ($joueurs as $joueur): ?>
                     <tr onclick="window.location.href = 'details_joueur.html.php?id=<?= htmlspecialchars($joueur['Id_joueur'], ENT_QUOTES, 'UTF-8') ?>';">
                         <td><?= htmlspecialchars($joueur['Nom'], ENT_QUOTES, 'UTF-8') ?></td>
@@ -47,9 +54,13 @@
                 </tbody>
             </table>
         <?php endif; ?>
-        
+
+        <!-- Section pour ajouter un joueur -->
         <h2>Ajouter un joueur</h2>
+
+        <!-- Formulaire d'ajout d'un joueur -->
         <form method="POST" action="./../php/ajout_joueur.php">
+            <!-- Champs pour les informations du joueur -->
             <p>
                 <label for="nom">Nom du Joueur</label>
                 <input type="text" id="nom" name="nom" required>
@@ -80,6 +91,7 @@
             </p>
             <p>
                 <label for="statut">Statut</label>
+                <!-- Sélecteur pour le statut du joueur -->
                 <select id="statut" name="statut" required>
                     <option value="actif">Actif</option>
                     <option value="blessé">Blessé</option>
@@ -87,6 +99,7 @@
                     <option value="absent">Absent</option>
                 </select>
             </p>
+            <!-- Bouton pour soumettre le formulaire -->
             <button type="submit">Ajouter Joueur</button>
         </form>
     </div>

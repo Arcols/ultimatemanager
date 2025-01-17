@@ -44,7 +44,7 @@ try {
         }
     }
 
-    // Redirection vers la page des détails du match après la soumission
+    // Redirection vers la page details_apres_match.html.php
     header("Location: ./../pages/details_apres_match.html.php?id=" . intval($idMatch));
     exit;
 
