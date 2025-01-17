@@ -50,7 +50,6 @@ function getEvaluationMoyenne($pdo, $idJoueur) {
     return $result !== null ? $result : 0;
 }
 
-// Fonction pour calculer le pourcentage de matchs gagnés par un joueur
 function getMatchsGagnés($pdo, $idJoueur) {
     // Récupérer tous les matchs du joueur
     $stmt = $pdo->prepare("SELECT id_match FROM participer WHERE id_joueur = :id");
@@ -66,13 +65,15 @@ function getMatchsGagnés($pdo, $idJoueur) {
     $stmt = $pdo->prepare("SELECT résultat FROM rencontre WHERE id_match IN ($placeholders)");
     $stmt->execute($matches);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    
     // Calculer le nombre de matchs gagnés
     $gagnés = 0;
     foreach ($results as $result) {
-        list($scoreEquipe, $scoreAdversaire) = explode(':', $result['résultat']);
-        if ((int)$scoreEquipe > (int)$scoreAdversaire) {
-            $gagnés++;
+        if ($result['résultat'] !== null) {
+            list($scoreEquipe, $scoreAdversaire) = explode(':', $result['résultat']);
+            if ((int)$scoreEquipe > (int)$scoreAdversaire) {
+                $gagnés++;
+            }
         }
     }
 
