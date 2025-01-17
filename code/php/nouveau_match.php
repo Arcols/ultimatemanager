@@ -19,11 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resultat2 = htmlspecialchars($_POST['resultat2']);
         if (!empty($resultat1) && !empty($resultat2) && is_numeric($resultat1) && is_numeric($resultat2)) {
             $resultat = $resultat1 . " : " . $resultat2;
-        } elseif (empty($resultat1) || empty($resultat2)) {
+        } elseif (empty($resultat1) && empty($resultat2)) {
+            $resultat = null;
+        }else{
             header('Location: ./../pages/matchs.html.php?error=Veuillez remplir les deux champs résultat ou aucun des deux');
             exit;
-        }else{
-            $resultat = null; // Attribuer null si un des champs est vide ou non valide
         }
         try {
             // Requête préparée pour insérer un joueur
