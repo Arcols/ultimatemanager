@@ -58,10 +58,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $errorMessage = "Identifiant de match invalide.";
 }
 
-// Calcul de l'âge à partir de la date de naissance
+// Fonction pour calculer l'âge
 function calculateAge($date_naissance) {
     $date_naissance = new DateTime($date_naissance);
-    $aujourdhui = new DateTime();
-    return $aujourdhui->diff($date_naissance)->y;
+    $today = new DateTime();
+    return $today->diff($date_naissance)->y;
 }
 

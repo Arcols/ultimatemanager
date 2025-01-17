@@ -77,17 +77,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($players as $player): ?>
+                        <?php foreach ($players as $joueur): ?>
                             <tr>
                                 <!-- Informations principales du joueur -->
-                                <td><?= htmlspecialchars($player['Nom']) ?></td>
-                                <td><?= htmlspecialchars($player['Prénom']) ?></td>
-                                <td><?= htmlspecialchars($player['Numéro_de_licence']) ?></td>
-                                <td><?= htmlspecialchars(calculateAge($player['Date_de_naissance'])) ?></td>
-                                <td><?= htmlspecialchars($player['Taille']) ?></td>
-                                <td><?= htmlspecialchars($player['Poid']) ?></td>
-                                <td><?= htmlspecialchars($player['Commentaire'] ?? 'Pas de commentaire') ?></td>
-
+                                <td><?= htmlspecialchars($joueur['Nom'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($joueur['Prénom'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($joueur['Numéro_de_licence'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars(calculateAge($joueur['Date_de_naissance'])) ?></td>
+                                <td><?= htmlspecialchars($joueur['Taille'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($joueur['Poid'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars($joueur['Commentaire'] ?? 'Pas de commentaire', ENT_QUOTES, 'UTF-8') ?></td>
+                        
                                 <!-- Checkbox pour sélectionner un joueur -->
                                 <td>
                                     <input type="checkbox" name="choix_<?= htmlspecialchars($player['Id_joueur']) ?>" onclick="toggleComboboxes(this)" <?= $player['assigned'] ? 'checked' : '' ?>>
