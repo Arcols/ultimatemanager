@@ -61,7 +61,7 @@
                     $resultat = !empty($row['Résultat']) ? htmlspecialchars($row['Résultat']) : "- <b>:</b> -";
 
                     // Déterminer la page cible en fonction de la date
-                    $detailsPage = $dateTime < $currentDateTime ? "details_match_apres.php" : "details_match_avant.php";
+                    $detailsPage = $dateTime < $currentDateTime ? "details_apres_match.html.php" : "details_avant_match.html.php";
 
                     echo "<tr onclick=\"window.location.href='$detailsPage?id=" . $row['Id_Match'] . "'\">
                             <td>" . htmlspecialchars($date) . "</td>
@@ -79,7 +79,7 @@
         </table>
 
         <!-- Formulaire pour ajouter un match -->
-        <form method="POST" action="./../php/ajout_match.php">
+        <form method="POST" action="./../php/nouveau_match.php">
             <p>
                 <label for="date_heure">Date </label>
                 <input type="datetime-local" id="date_heure" name="date_heure" required>

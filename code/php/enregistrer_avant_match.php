@@ -57,7 +57,7 @@ try {
     // Vérifier si le nombre de titulaires sélectionnés est exactement 7
     if ($titulairesSelectionnes !== 7) {
         // Si le nombre de titulaires n'est pas 7, rediriger avec un message d'erreur dans l'URL
-        header("Location: ./../pages/details_match_avant.php?id=" . intval($idMatch) . "&error=titulaires");
+        header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=titulaires");
         exit;  // Ajouter exit ici pour éviter que le code continue après la redirection
     }
 
@@ -98,7 +98,7 @@ try {
     }
 
     // Redirection vers la page des détails du match après la soumission
-    header("Location: ./../pages/details_match_avant.php?id=" . intval($idMatch));
+    header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch));
     exit;  // Assurez-vous d'ajouter exit ici aussi
 } catch (PDOException $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
