@@ -44,10 +44,10 @@
                 <!-- Sélecteur pour choisir le statut du joueur -->
                 <label for="status">Statut :</label>
                 <select id="status" name="status">
-                    <option value="actif" <?= $joueur['Statut'] === 'actif' ? 'selected' : '' ?>>Actif</option>
-                    <option value="blesse" <?= $joueur['Statut'] === 'blesse' ? 'selected' : '' ?>>Blessé</option>
-                    <option value="suspendu" <?= $joueur['Statut'] === 'suspendu' ? 'selected' : '' ?>>Suspendu</option>
-                    <option value="absent" <?= $joueur['Statut'] === 'absent' ? 'selected' : '' ?>>Absent</option>
+                    <option value="Actif" <?= $joueur['Statut'] === 'Actif' ? 'selected' : '' ?>>Actif</option>
+                    <option value="Blessé" <?= $joueur['Statut'] === 'Blessé' ? 'selected' : '' ?>>Blessé</option>
+                    <option value="Suspendu" <?= $joueur['Statut'] === 'Suspendu' ? 'selected' : '' ?>>Suspendu</option>
+                    <option value="Absent" <?= $joueur['Statut'] === 'Absent' ? 'selected' : '' ?>>Absent</option>
                 </select>
 
                 <!-- Bouton pour valider les modifications -->
@@ -60,7 +60,7 @@
             </form>
         <?php else: ?>
             <!-- Message affiché si aucun joueur n'a été trouvé -->
-            <p style="text-align:center;">Aucun joueur trouvé.</p>
+            <p>Aucun joueur trouvé.</p>
         <?php endif; ?>
     </main>
 </body>

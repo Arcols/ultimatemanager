@@ -21,10 +21,10 @@
         <?php include './../php/joueur.php'; ?>
 
         <?php if ($error): ?>
-            <p style="color: red;"><?= $error ?></p>
+            <p><?= $error ?></p>
         <?php else: ?>
             <!-- Table des joueurs -->
-            <table border="1" style="border-collapse: collapse; width: 100%;">
+            <table>
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -93,10 +93,10 @@
                 <label for="statut">Statut</label>
                 <!-- Sélecteur pour le statut du joueur -->
                 <select id="statut" name="statut" required>
-                    <option value="actif">Actif</option>
-                    <option value="blessé">Blessé</option>
-                    <option value="suspendu">Suspendu</option>
-                    <option value="absent">Absent</option>
+                    <option value="Actif">Actif</option>
+                    <option value="Blessé">Blessé</option>
+                    <option value="Suspendu">Suspendu</option>
+                    <option value="Absent">Absent</option>
                 </select>
             </p>
             <!-- Bouton pour soumettre le formulaire -->

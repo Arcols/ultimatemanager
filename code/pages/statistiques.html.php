@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Manager - Statistiques</title>
     <link rel="stylesheet" href="./../css/global.css">
+    <link rel="stylesheet" href="./../css/header.css">
     <link rel="stylesheet" href="./../css/statistiques.css">
 </head>
 <body>
@@ -29,7 +30,7 @@
         <p>Pourcentage de matchs perdus : <?= number_format($pourcentagePerdus, 2) ?>%</p>
 
         <!-- Table des joueurs avec leurs statistiques individuelles -->
-        <table border="1" style="border-collapse: collapse; width: 100%;">
+        <table>
             <thead>
                 <tr>
                     <th>Nom</th>

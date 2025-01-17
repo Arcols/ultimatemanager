@@ -1,0 +1,83 @@
+select, input, button {
+    width: 20%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+form:nth-of-type(1) button{
+    width: 10%;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+form:nth-of-type(2) select, 
+form:nth-of-type(2) input {
+    width: 100%;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+form:nth-of-type(2) select {
+    background-color: #f9f9f9;
+}
+
+form:nth-of-type(2) input[type="number"] {
+    text-align: center;
+}
+
+form:nth-of-type(2) button {
+    cursor: pointer;
+    color: #fff;
+    margin-top: 15px;
+}
+
+select {
+    background-color: #f9f9f9;
+}
+
+input[type="number"] {
+    text-align: center;
+}
+
+button {
+    cursor: pointer;
+    color: #fff;
+    margin-top: 15px;
+}
+
+button[type="submit"] {
+    background-color: var(--green);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--hard-green);
+}
+
+button[type="button"] {
+    background-color: var(--red);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button[type="button"]:hover {
+    background-color: var(--hard-red);
+}
+
+/* Positionnement des boutons Valider et Supprimer */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

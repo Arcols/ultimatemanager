@@ -42,10 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ./../pages/matchs.html.php?success=1');
             exit;
         } catch (PDOException $e) {
-            echo "<p style='color: red;'>Erreur lors de l'ajout : " . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<p>Erreur lors de l'ajout : " . htmlspecialchars($e->getMessage()) . "</p>";
         }
     } else {
-        echo "<p style='color: red;'>Veuillez remplir tous les champs du formulaire.</p>";
+        echo "<p>Veuillez remplir tous les champs du formulaire.</p>";
     }
 }
 ?>

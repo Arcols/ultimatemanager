@@ -19,7 +19,7 @@
 
         <!-- Affichage des messages d'erreur ou des informations du match -->
         <?php if ($errorMessage): ?>
-            <p style="color:red;"><?= htmlspecialchars($errorMessage) ?></p>
+            <p><?= htmlspecialchars($errorMessage) ?></p>
         <?php elseif ($match): ?>
             <!-- Affichage des informations principales du match -->
             <p><strong>Date :</strong> <?= (new DateTime($match['Date_Heure']))->format('d/m/Y à H\hi') ?></p>

@@ -26,3 +26,23 @@
     margin-top: 20px;
     text-align: center;
 }
+
+button[type="submit"] {
+    background-color: var(--green);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--hard-green);
+}
+button {
+    width: calc(25%);
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    margin-top: 15px;
+}

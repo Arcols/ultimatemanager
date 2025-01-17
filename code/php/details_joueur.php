@@ -77,13 +77,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $joueur['Poid'] = $poid;
             $joueur['Commentaire'] = $commentaire;
             $joueur['Statut'] = $status;
-            $message = "<p style='color:green;'>Les informations ont été mises à jour avec succès.</p>";
+            $message = "<p>Les informations ont été mises à jour avec succès.</p>";
         }
     } catch (PDOException $e) {
-        echo "<p>'>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
+        echo "<p>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
     }
 } else {
-    echo "<p style='text-align:center;'>Identifiant de match invalide.</p>";
+    echo "<p>Identifiant de match invalide.</p>";
     exit;
 }
 ?>

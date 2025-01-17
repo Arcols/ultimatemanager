@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du Match</title>
     <link rel="stylesheet" href="./../css/global.css">
-
+    <link rel="stylesheet" href="./../css/header.css">
+    <link rel="stylesheet" href="./../css/match_avant.css">
     <script>
         // Fonction pour afficher/masquer les comboboxes (Poste et Rôle) en fonction du checkbox
         function toggleComboboxes(checkbox) {
@@ -35,7 +36,7 @@
 
     <!-- Affichage d'un message d'erreur si nécessaire -->
     <?php if (isset($errorMessage)): ?>
-        <p style="color:red;"><?= $errorMessage ?></p>
+        <p><?= $errorMessage ?></p>
     <?php else: ?>
 
         <!-- Alerte en cas de problème avec le nombre de titulaires -->
@@ -61,7 +62,7 @@
             <h2>Joueurs ayant participé</h2>
             <form method="POST" action="./../php/enregistrer_avant_match.php">
                 <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
-                <table border="1" style="border-collapse: collapse; width: 100%;">
+                <table border="1">
                     <thead>
                         <tr>
                             <th>Nom</th>
@@ -114,18 +115,18 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <button type="submit">Valider</button>
             </form>
         <?php else: ?>
             <p>Match introuvable.</p>
         <?php endif; ?>
     <?php endif; ?>
-
-    <!-- Formulaire et bouton pour supprimer le match -->
-    <form id="deleteForm" method="POST" action="./../php/enregistrer_avant_match.php">
-        <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
-        <input type="hidden" name="action" value="supprimer">
-    </form>
-    <button type="button" onclick="confirmDelete()">Supprimer le match</button>
+    <div class="button-container">
+        <button type="submit">Valider</button>
+        <form id="deleteForm" method="POST" action="./../php/enregistrer_avant_match.php">
+            <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
+            <input type="hidden" name="action" value="supprimer">
+        </form>
+        <button type="button" onclick="confirmDelete()">Supprimer le match</button>
+    </div>    
 </body>
 </html>

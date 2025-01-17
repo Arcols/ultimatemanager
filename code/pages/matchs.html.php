@@ -6,7 +6,7 @@
     <title>Ultimate Manager - Matchs</title>
     <link rel="stylesheet" href="./../css/global.css">
     <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/joueur.css">
+    <link rel="stylesheet" href="./../css/matchs.css">
 </head>
 <body>
     <!-- Inclusion de l'en-tête du site -->
@@ -31,15 +31,15 @@
 
         <!-- Affichage des messages d'erreur ou de succès -->
         <?php if (!empty($errorMessage)): ?>
-            <p style='color: red;'><?php echo $errorMessage; ?></p>
+            <p><?php echo $errorMessage; ?></p>
         <?php endif; ?>
 
         <?php if (!empty($successMessage)): ?>
-            <p style='color: green;'><?php echo $successMessage; ?></p>
+            <p><?php echo $successMessage; ?></p>
         <?php endif; ?>
 
         <!-- Table des matchs -->
-        <table border="1" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+        <table>
             <thead>
                 <tr>
                     <th>Date</th>
