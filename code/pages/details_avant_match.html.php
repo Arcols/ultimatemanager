@@ -90,24 +90,24 @@
                         
                                 <!-- Checkbox pour sélectionner un joueur -->
                                 <td>
-                                    <input type="checkbox" name="choix_<?= htmlspecialchars($player['Id_joueur']) ?>" onclick="toggleComboboxes(this)" <?= $player['assigned'] ? 'checked' : '' ?>>
+                                    <input type="checkbox" name="choix_<?= htmlspecialchars($joueur['Id_joueur']) ?>" onclick="toggleComboboxes(this)" <?= $joueur['assigned'] ? 'checked' : '' ?>>
                                 </td>
 
                                 <!-- Combobox pour choisir le poste -->
                                 <td>
-                                    <select class="poste" style="display: <?= $player['assigned'] ? 'inline' : 'none' ?>;" name="poste_<?= htmlspecialchars($player['Id_joueur']) ?>">
-                                        <option value="Attaquant" <?= $player['poste'] === 'Attaquant' ? 'selected' : '' ?>>Attaquant</option>
-                                        <option value="Milieu" <?= $player['poste'] === 'Milieu' ? 'selected' : '' ?>>Milieu</option>
-                                        <option value="Défenseur" <?= $player['poste'] === 'Défenseur' ? 'selected' : '' ?>>Défenseur</option>
-                                        <option value="Gardien" <?= $player['poste'] === 'Gardien' ? 'selected' : '' ?>>Gardien</option>
+                                    <select class="poste" style="display: <?= $joueur['assigned'] ? 'inline' : 'none' ?>;" name="poste_<?= htmlspecialchars($joueur['Id_joueur']) ?>">
+                                        <option value="Attaquant" <?= $joueur['poste'] === 'Attaquant' ? 'selected' : '' ?>>Attaquant</option>
+                                        <option value="Milieu" <?= $joueur['poste'] === 'Milieu' ? 'selected' : '' ?>>Milieu</option>
+                                        <option value="Défenseur" <?= $joueur['poste'] === 'Défenseur' ? 'selected' : '' ?>>Défenseur</option>
+                                        <option value="Gardien" <?= $joueur['poste'] === 'Gardien' ? 'selected' : '' ?>>Gardien</option>
                                     </select>
                                 </td>
 
                                 <!-- Combobox pour choisir le rôle -->
                                 <td>
-                                    <select class="role" style="display: <?= $player['assigned'] ? 'inline' : 'none' ?>;" name="role_<?= htmlspecialchars($player['Id_joueur']) ?>">
-                                        <option value="Titulaire" <?= $player['role'] === 'Titulaire' ? 'selected' : '' ?>>Titulaire</option>
-                                        <option value="Remplaçant" <?= $player['role'] === 'Remplaçant' ? 'selected' : '' ?>>Remplaçant</option>
+                                    <select class="role" style="display: <?= $joueur['assigned'] ? 'inline' : 'none' ?>;" name="role_<?= htmlspecialchars($joueur['Id_joueur']) ?>">
+                                        <option value="Titulaire" <?= $joueur['role'] === 'Titulaire' ? 'selected' : '' ?>>Titulaire</option>
+                                        <option value="Remplaçant" <?= $joueur['role'] === 'Remplaçant' ? 'selected' : '' ?>>Remplaçant</option>
                                     </select>
                                 </td>
                             </tr>
