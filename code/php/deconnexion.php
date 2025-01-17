@@ -2,6 +2,6 @@
 session_start();
 session_unset(); // Supprime toutes les variables de session
 session_destroy(); // Détruit la session
-header("Location: ./../pages/connexion.php"); // Redirige vers la page de connexion
+header("Location: ./../pages/connexion.html.php"); // Redirige vers la page de connexion
 exit;
 ?>

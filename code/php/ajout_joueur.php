@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':statut' => $statut
             ]);
 
-            // Rediriger vers joueur.php après ajout avec un message de succès
-            header('Location: ./../pages/joueur.php?success=1');
+            // Rediriger vers joueur.html.php après ajout avec un message de succès
+            header('Location: ./../pages/joueur.html.php?success=1');
             exit;
         } catch (PDOException $e) {
             echo "<p style='color: red;'>Erreur lors de l'ajout : " . htmlspecialchars($e->getMessage()) . "</p>";

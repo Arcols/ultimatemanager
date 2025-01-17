@@ -22,7 +22,7 @@ try {
         $stmt->execute([':idMatch' => intval($idMatch)]);
 
         // Redirection après la suppression
-        header("Location: ./../pages/matchs.php");
+        header("Location: ./../pages/matchs.html.php");
         exit;  // Assurez-vous d'ajouter exit pour stopper le script après la redirection
     }
 
