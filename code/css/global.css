@@ -43,3 +43,7 @@ tr:hover {
 td:hover {
     background-color: var(--dark-primary-color);
 }
+
+p {
+    color : var(--red);
+}
