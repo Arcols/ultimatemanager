@@ -3,11 +3,8 @@ require_once 'connection_bd.php';
 
 session_start();
 
-// Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-if (!isset($_SESSION['login'])) {
-    header("Location: connexion.php");
-    exit;
-}
+require_once 'validate_token.php';
+validate_token();
 
 try {
     $pdo = connectionToDB();

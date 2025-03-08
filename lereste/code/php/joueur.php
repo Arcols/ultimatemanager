@@ -1,13 +1,8 @@
 <?php
 require_once 'connection_bd.php';
-
+require_once 'validate_token.php';
 session_start();
-
-// Vérifier si l'utilisateur est connecté
-if (!$_SESSION['jwt_token']) {
-    header("Location: connexion.html.php");
-    exit;
-}
+validate_token();
 
 $joueurs = [];
 $error = null;

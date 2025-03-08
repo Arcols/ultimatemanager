@@ -1,6 +1,7 @@
 <?php
 require_once 'connection_bd.php';
-
+require_once 'validate_token.php';
+validate_token();
 // Connexion à la base de données
 try {
     $pdo = connectionToDB();

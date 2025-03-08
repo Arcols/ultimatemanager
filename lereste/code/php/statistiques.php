@@ -3,10 +3,8 @@ require_once 'connection_bd.php';
 
 // Démarrer la session et vérifier si l'utilisateur est connecté
 session_start();
-if (!isset($_SESSION['login'])) {
-    header("Location: connexion.html.php");
-    exit;
-}
+require_once 'validate_token.php';
+validate_token();
 
 // Fonction pour récupérer les statistiques des matchs (gagnés, nuls, perdus)
 function getMatchsStats($pdo) {

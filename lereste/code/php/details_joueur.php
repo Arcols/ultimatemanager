@@ -1,10 +1,8 @@
 <?php
 session_start();
 require_once 'connection_bd.php';
-if (!isset($_SESSION['login'])) {
-    header("Location: connexion.html.php");
-    exit;
-}
+require_once 'validate_token.php';
+validate_token();
 
 function calculateAge($date_naissance) {
     try {

@@ -1,9 +1,8 @@
 <?php
 session_start();
-if (!isset($_SESSION['login'])) {
-    header("Location: connexion.html.php");
-    exit;
-}
+
+require_once 'validate_token.php';
+validate_token();
 require_once 'connection_bd.php';
 
 $idMatch = null;
