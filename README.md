@@ -30,3 +30,10 @@ Pour installer et exécuter le projet localement :
 
    ```bash
    git clone https://github.com/Arcols/UltimateManager.git
+    ```
+
+### Accéder au site
+
+1. URL Du Site : [UltimateManager](https://ultimatemanager.alwaysdata.net
+2. Identifiant : `indi`
+3. Mot de passe : `blt`

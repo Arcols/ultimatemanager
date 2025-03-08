@@ -4,6 +4,7 @@ if (!isset($_SESSION['login'])) {
     header("Location: connexion.html.php");
     exit;
 }
+require_once 'connection_bd.php';
 
 $idMatch = null;
 $match = null;
@@ -13,10 +14,9 @@ $errorMessage = null;
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $idMatch = intval($_GET['id']);
 
+
     try {
-        // Connexion à la base de données
-        $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = connectionToDB();
 
         // Requête pour récupérer les informations du match
         $stmt = $pdo->prepare("SELECT * FROM rencontre WHERE Id_Match = :id");

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Manager - Joueur</title>
     
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/details_joueur.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/details_joueur.css">
 </head>
 <body>
     <div class="header">

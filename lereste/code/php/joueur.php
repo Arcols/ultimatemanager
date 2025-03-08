@@ -1,8 +1,10 @@
 <?php
+require_once 'connection_bd.php';
+
 session_start();
 
 // Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['login'])) {
+if (!$_SESSION['jwt_token']) {
     header("Location: connexion.html.php");
     exit;
 }
@@ -11,9 +13,7 @@ $joueurs = [];
 $error = null;
 
 try {
-    // Connexion à la base de données
-    $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = connectionToDB();
 
     // Récupérer les données des joueurs
     $stmt = $pdo->query("SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Statut, Date_de_naissance FROM joueur");

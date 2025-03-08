@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du Match</title>
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/match_avant.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/match_avant.css">
     <script>
         // Fonction pour afficher/masquer les comboboxes (Poste et Rôle) en fonction du checkbox
         function toggleComboboxes(checkbox) {
@@ -51,7 +51,7 @@
             <p>Le <?= (new DateTime($match['Date_Heure']))->format('d/m/Y \à H\hi') ?></p>
 
             <!-- Formulaire pour modifier la date du match -->
-            <form method="POST" action="./../php/enregistrer_avant_match.php">
+            <form method="POST" action="../php/enregistrer_avant_match.php">
                 <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
                 <label for="nouvelle_date">Nouvelle date :</label>
                 <input type="datetime-local" name="nouvelle_date" id="nouvelle_date" value="<?= (new DateTime($match['Date_Heure']))->format('Y-m-d\TH:i') ?>" min="<?= date('Y-m-d\TH:i') ?>">
@@ -60,7 +60,7 @@
 
             <!-- Liste des joueurs participants -->
             <h2>Joueurs ayant participé</h2>
-            <form method="POST" action="./../php/enregistrer_avant_match.php">
+            <form method="POST" action="../php/enregistrer_avant_match.php">
                 <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
                 <table border="1">
                     <thead>
@@ -122,7 +122,7 @@
     <?php endif; ?>
     <div class="button-container">
         <button type="submit">Valider</button>
-        <form id="deleteForm" method="POST" action="./../php/enregistrer_avant_match.php">
+        <form id="deleteForm" method="POST" action="../php/enregistrer_avant_match.php">
             <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
             <input type="hidden" name="action" value="supprimer">
         </form>

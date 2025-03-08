@@ -1,4 +1,6 @@
 <?php
+require_once 'connection_bd.php';
+
 session_start();
 
 // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
@@ -8,8 +10,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 try {
-    $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = connectionToDB();
 
     // Déterminer le filtre sélectionné
     $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : 'tous';

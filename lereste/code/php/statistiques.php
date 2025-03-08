@@ -1,4 +1,6 @@
 <?php
+require_once 'connection_bd.php';
+
 // Démarrer la session et vérifier si l'utilisateur est connecté
 session_start();
 if (!isset($_SESSION['login'])) {
@@ -115,8 +117,7 @@ function getNombreDeSelectionConsecutive($pdo, $idJoueur) {
 
 // Connexion à la base de données
 try {
-    $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = connectionToDB();
 
     // Récupérer les joueurs et leurs statistiques de participation
     $stmt = $pdo->query("SELECT DISTINCT j.Id_joueur, j.Nom, j.Prénom, j.Statut 

@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Manager - Détails du Match</title>
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/match_apres.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/match_apres.css">
 </head>
 <body>
     <div class="header">
@@ -27,7 +27,7 @@
             <p><strong>Adversaire :</strong> <?= htmlspecialchars($match['Nom_adversaire']) ?></p>
 
             <!-- Formulaire pour enregistrer les détails du match (score, notes, etc.) -->
-            <form method="POST" action="./../php/enregistrer_apres_match.php">
+            <form method="POST" action="../php/enregistrer_apres_match.php">
                 <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
 
                 <!-- Section pour saisir le score -->

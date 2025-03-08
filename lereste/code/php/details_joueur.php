@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'connection_bd.php';
 if (!isset($_SESSION['login'])) {
     header("Location: connexion.html.php");
     exit;
@@ -26,9 +27,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $IdJoueur = intval($_GET['id']);
 
     try {
-        // connection à la base de donnée
-        $pdo = new PDO('mysql:host=mysql-ultimatemanager.alwaysdata.net;dbname=ultimatemanager_bdd;charset=utf8mb4', '385401', '$iutinfo');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = connectionToDB();
 
         $referencedInParticiper = false;
 

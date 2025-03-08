@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Manager - Matchs</title>
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/matchs.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/matchs.css">
 </head>
 <body>
     <!-- Inclusion de l'en-tête du site -->
@@ -81,7 +81,7 @@
         </table>
 
         <!-- Formulaire pour ajouter un match -->
-        <form method="POST" action="./../php/nouveau_match.php">
+        <form method="POST" action="../php/nouveau_match.php">
             <p>
                 <label for="date_heure">Date </label>
                 <input type="datetime-local" id="date_heure" name="date_heure" required>

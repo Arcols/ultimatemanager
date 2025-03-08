@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Manager - Joueurs</title>
-    <link rel="stylesheet" href="./../css/global.css">
-    <link rel="stylesheet" href="./../css/header.css">
-    <link rel="stylesheet" href="./../css/joueur.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/joueur.css">
 </head>
 <body>
     <div class="header">
@@ -59,7 +59,7 @@
         <h2>Ajouter un joueur</h2>
 
         <!-- Formulaire d'ajout d'un joueur -->
-        <form method="POST" action="./../php/ajout_joueur.php">
+        <form method="POST" action="../php/ajout_joueur.php">
             <!-- Champs pour les informations du joueur -->
             <p>
                 <label for="nom">Nom du Joueur</label>
