@@ -4,83 +4,174 @@ require_once 'connection_bd.php';
 require_once './../../../backend/validate_token.php';
 validate_token();
 
+$joueur = [];
+$error = null;
+
 function calculateAge($date_naissance) {
-    try {
-        $date_naissance = new DateTime($date_naissance);
-        $aujourdhui = new DateTime();
-        return $aujourdhui->diff($date_naissance)->y;
-    } catch (Exception $e) {
-        return 'Inconnu';
+    $date_naissance = new DateTime($date_naissance);
+    $today = new DateTime();
+    return $today->diff($date_naissance)->y;
+}
+
+function getJoueurDetails($idJoueur) {
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointDetailsJoueur.php?id=' . $idJoueur;
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
     }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
 }
 
-// Vérifier si l'ID du joueur est référencé dans la table `participer`
-function aParticipéAUnMatch($pdo, $idJoueur) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participer WHERE id_joueur = :id");
-    $stmt->execute([':id' => $idJoueur]);
-    return $stmt->fetchColumn() > 0;
+function updateJoueurDetails($data) {
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointDetailsJoueur.php';
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT"); // Use PUT method
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set PUT fields
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
 }
 
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $IdJoueur = intval($_GET['id']);
+function deleteJoueur($idJoueur){
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointDetailsJoueur.php?id=' . $idJoueur;
 
-    try {
-        $pdo = connectionToDB();
+    // Initialize cURL
+    $ch = curl_init($url);
 
-        $referencedInParticiper = false;
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE"); // Use DELETE method
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
 
-        if (aParticipéAUnMatch($pdo, $IdJoueur)) {
-            $referencedInParticiper = true;
-        }
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        $stmt = $pdo->prepare("SELECT Id_joueur, Numéro_de_licence, Nom, Prénom, Taille, Poid, Commentaire, Date_de_naissance, Statut 
-                               FROM joueur WHERE Id_joueur = :id");
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
 
-        // je récupère l'id du joueur pour afficher ses informations et les prochaines requetes
-        $stmt->execute([':id' => $IdJoueur]);
-        $joueur = $stmt->fetch(PDO::FETCH_ASSOC);
+    curl_close($ch);
 
-        $message = "";
-        $nom = $joueur['Nom'];
-        $prenom = $joueur['Prénom'];
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
+}
+
+try {
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+        $idJoueur = intval($_GET['id']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $licence = $_POST['licence'];
-            $taille = $_POST['taille'];
-            $poid = $_POST['poid'];
-            $commentaire = $_POST['commentaire'];
-            $status = $_POST['status'];
-            // Validation d'un joueur
-            if(isset($_POST['Valider'])){
-                $updateStmt = $pdo->prepare("UPDATE joueur SET Numéro_de_licence = :licence, Taille = :taille, Poid = :poid, Commentaire = :commentaire, Statut = :status WHERE Id_joueur = :id");
-                $updateStmt->execute([      
-                    ':licence' => $licence,
-                    ':taille' => $taille,
-                    ':poid' => $poid,
-                    ':commentaire' => $commentaire,
-                    ':status' => $status,
-                    ':id' => $IdJoueur
-                ]);
+            if(isset($_POST['delete']))
+            {
+                $response = deleteJoueur($idJoueur);
+                if ($response['status'] == 200) {
+                    header('Location: ./../pages/joueurs.html.php');
+                    exit;
+                } else {
+                    $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
+                }
             }
-            // Suppression d'un joueur
-            if(isset($_POST['delete'])){
-                $deleteStmt = $pdo->prepare("DELETE FROM joueur WHERE Id_joueur = :id");
-                $deleteStmt->execute([':id' => $IdJoueur]);
-                header("Location: joueurs.php");
-                exit;
+            $data = [
+                'id' => $idJoueur,
+                'licence' => $_POST['licence'] ?? null,
+                'taille' => $_POST['taille'] ?? null,
+                'poid' => $_POST['poid'] ?? null,
+                'commentaire' => $_POST['commentaire'] ?? null,
+                'status' => $_POST['status'] ?? null
+            ];
+
+            $response = updateJoueurDetails($data);
+            if ($response['status'] == 200) {
+                $message = "Les informations ont été mises à jour avec succès.";
+                header('Location: ./../pages/joueurs.html.php');
             }
-            $joueur['Numéro_de_licence'] = $licence;
-            $joueur['Taille'] = $taille;
-            $joueur['Poid'] = $poid;
-            $joueur['Commentaire'] = $commentaire;
-            $joueur['Statut'] = $status;
-            $message = "<p>Les informations ont été mises à jour avec succès.</p>";
+        } else {
+            $response = getJoueurDetails($idJoueur);
+            if ($response['status'] == 200) {
+                $joueur = $response['data'];
+            } else {
+                $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
+            }
         }
-    } catch (PDOException $e) {
-        echo "<p>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
+    } else {
+        $error = "Identifiant de joueur invalide.";
     }
-} else {
-    echo "<p>Identifiant de match invalide.</p>";
-    exit;
+} catch (Exception $e) {
+    $error = "Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
 }
 ?>

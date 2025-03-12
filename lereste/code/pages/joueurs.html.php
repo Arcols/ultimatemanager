@@ -59,7 +59,7 @@
         <h2>Ajouter un joueur</h2>
 
         <!-- Formulaire d'ajout d'un joueur -->
-        <form method="POST" action="../php/ajout_joueur.php">
+        <form method="POST" action="../php/joueurs.php">
             <!-- Champs pour les informations du joueur -->
             <p>
                 <label for="nom">Nom du Joueur</label>

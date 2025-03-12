@@ -60,6 +60,7 @@ switch ($http_method) {
         deliver_response(200, "ok", $data);
         break;
     default:
+        deliver_response(405, "Method Not Allowed");
         break;
 }
 ?>

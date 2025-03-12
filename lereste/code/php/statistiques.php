@@ -1,7 +1,6 @@
 <?php
 function getStats() {
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backEnd/endpointStats.php';
-
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointStats.php';
     // Initialize cURL
     $ch = curl_init($url);
 
@@ -49,6 +48,6 @@ if ($response['status'] == 200) {
     $pourcentageNuls = $matchsStats['pourcentageNuls'];
     $pourcentagePerdus = $matchsStats['pourcentagePerdus'];
 } else {
-    echo "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Unknown");
+    echo "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
 }
 ?>

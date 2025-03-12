@@ -19,7 +19,6 @@
 
         <!-- Vérification si un joueur a été trouvé -->
         <?php if (!empty($joueur)): ?>
-            <?= $message ?>
 
             <!-- Affichage des informations du joueur -->
             <h1><?= htmlspecialchars($joueur['Nom'], ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($joueur['Prénom'], ENT_QUOTES, 'UTF-8') ?></h1>
@@ -54,7 +53,7 @@
                 <button type="submit" name="Valider">Valider</button>
 
                 <!-- Bouton pour supprimer le joueur, uniquement si le joueur n'est pas référencé dans un autre contexte (par exemple, une participation) -->
-                <?php if (!$referencedInParticiper): ?>
+                <?php if (!$joueur["aParticipéAUnMatch"]): ?>
                     <button type="submit" name="delete" value="delete" class="deleteButton" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?');">Supprimer le joueur</button>
                 <?php endif; ?>
             </form>
