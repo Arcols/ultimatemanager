@@ -3,7 +3,7 @@ require_once 'connection_bd.php';
 
 session_start();
 
-require_once 'validate_token.php';
+require_once './../../../backend/validate_token.php';
 validate_token();
 
 try {

@@ -1,138 +1,54 @@
 <?php
-require_once 'connection_bd.php';
+function getStats() {
+    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backEnd/endpointStats.php';
 
-// Démarrer la session et vérifier si l'utilisateur est connecté
-session_start();
-require_once 'validate_token.php';
-validate_token();
+    // Initialize cURL
+    $ch = curl_init($url);
 
-// Fonction pour récupérer les statistiques des matchs (gagnés, nuls, perdus)
-function getMatchsStats($pdo) {
-    $stmt = $pdo->query("SELECT 
-        SUM(CASE WHEN résultat LIKE '%:%' AND CAST(SUBSTRING_INDEX(résultat, ':', 1) AS UNSIGNED) > CAST(SUBSTRING_INDEX(résultat, ':', -1) AS UNSIGNED) THEN 1 ELSE 0 END) AS gagnés,
-        SUM(CASE WHEN résultat LIKE '%:%' AND CAST(SUBSTRING_INDEX(résultat, ':', 1) AS UNSIGNED) = CAST(SUBSTRING_INDEX(résultat, ':', -1) AS UNSIGNED) THEN 1 ELSE 0 END) AS nuls,
-        SUM(CASE WHEN résultat LIKE '%:%' AND CAST(SUBSTRING_INDEX(résultat, ':', 1) AS UNSIGNED) < CAST(SUBSTRING_INDEX(résultat, ':', -1) AS UNSIGNED) THEN 1 ELSE 0 END) AS perdus
-    FROM rencontre");
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
 
-// Fonction pour récupérer le poste préféré d'un joueur
-function getPostePréféré($pdo, $idJoueur) {
-    $stmt = $pdo->prepare("SELECT Poste, COUNT(*) as Occurrence 
-                           FROM participer 
-                           WHERE id_joueur = :id 
-                           GROUP BY Poste 
-                           ORDER BY Occurrence DESC 
-                           LIMIT 1");
-    $stmt->execute([':id' => $idJoueur]);
-    return $stmt->fetchColumn();
-}
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-// Fonction pour compter les titularisations d'un joueur
-function getNombreDeTitularisation($pdo, $idJoueur) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participer WHERE id_joueur = :id AND Role = 0");
-    $stmt->execute([':id' => $idJoueur]);
-    return $stmt->fetchColumn();
-}
-
-// Fonction pour compter les remplacements d'un joueur
-function getNombreDeRemplacements($pdo, $idJoueur) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM participer WHERE id_joueur = :id AND Role = 1");
-    $stmt->execute([':id' => $idJoueur]);
-    return $stmt->fetchColumn();
-}
-
-// Fonction pour calculer la note moyenne d'un joueur
-function getEvaluationMoyenne($pdo, $idJoueur) {
-    $stmt = $pdo->prepare("SELECT AVG(Note) FROM participer WHERE id_joueur = :id");
-    $stmt->execute([':id' => $idJoueur]);
-    $result = $stmt->fetchColumn();
-    return $result !== null ? $result : 0;
-}
-
-function getMatchsGagnés($pdo, $idJoueur) {
-    // Récupérer tous les matchs du joueur
-    $stmt = $pdo->prepare("SELECT id_match FROM participer WHERE id_joueur = :id");
-    $stmt->execute([':id' => $idJoueur]);
-    $matches = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    if (empty($matches)) {
-        return 0; // Aucun match trouvé
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
     }
 
-    // Préparer une requête pour vérifier les résultats des matchs récupérés
-    $placeholders = str_repeat('?,', count($matches) - 1) . '?';
-    $stmt = $pdo->prepare("SELECT résultat FROM rencontre WHERE id_match IN ($placeholders)");
-    $stmt->execute($matches);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Calculer le nombre de matchs gagnés
-    $gagnés = 0;
-    foreach ($results as $result) {
-        if ($result['résultat'] !== null) {
-            list($scoreEquipe, $scoreAdversaire) = explode(':', $result['résultat']);
-            if ((int)$scoreEquipe > (int)$scoreAdversaire) {
-                $gagnés++;
-            }
-        }
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
     }
 
-    return count($results) > 0 ? ($gagnés / count($results)) * 100 : 0; // Retourne le pourcentage de victoires
+    return array_merge(['status' => $http_code], $response);
 }
 
-// Fonction pour calculer le plus grand nombre de sélections consécutives d'un joueur
-function getNombreDeSelectionConsecutive($pdo, $idJoueur) {
-    $stmt = $pdo->prepare("SELECT r.Date_Heure 
-                           FROM participer p
-                           JOIN rencontre r ON p.id_match = r.id_match
-                           WHERE p.id_joueur = :id
-                           ORDER BY r.Date_Heure ASC");
-    $stmt->execute([':id' => $idJoueur]);
-    $dates = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    if (empty($dates)) {
-        return 0; // Aucun match trouvé
-    }
-
-    $maxConsecutive = 0;
-    $currentConsecutive = 1;
-
-    // Parcourir les dates pour calculer les sélections consécutives
-    for ($i = 1; $i < count($dates); $i++) {
-        $previousDate = new DateTime($dates[$i - 1]);
-        $currentDate = new DateTime($dates[$i]);
-        $interval = $previousDate->diff($currentDate)->days;
-        if ($interval == 1) { // Si les dates sont consécutives
-            $currentConsecutive++;
-        } else {
-            $maxConsecutive = max($maxConsecutive, $currentConsecutive);
-            $currentConsecutive = 1;
-        }
-    }
-
-    return max($maxConsecutive, $currentConsecutive); // Retourner la plus grande série consécutive
-}
-
-// Connexion à la base de données
-try {
-    $pdo = connectionToDB();
-
-    // Récupérer les joueurs et leurs statistiques de participation
-    $stmt = $pdo->query("SELECT DISTINCT j.Id_joueur, j.Nom, j.Prénom, j.Statut 
-                         FROM joueur j
-                         JOIN participer p ON j.Id_joueur = p.id_joueur");
-    $joueurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Récupérer les statistiques globales des matchs
-    $matchsStats = getMatchsStats($pdo);
-    $totalMatchs = $matchsStats['gagnés'] + $matchsStats['nuls'] + $matchsStats['perdus'];
-    $pourcentageGagnés = $totalMatchs > 0 ? ($matchsStats['gagnés'] / $totalMatchs) * 100 : 0;
-    $pourcentageNuls = $totalMatchs > 0 ? ($matchsStats['nuls'] / $totalMatchs) * 100 : 0;
-    $pourcentagePerdus = $totalMatchs > 0 ? ($matchsStats['perdus'] / $totalMatchs) * 100 : 0;
-
-} catch (PDOException $e) {
-    // Gestion des erreurs de connexion
-    echo "<p>Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . "</p>";
-    exit;
+// Example usage
+$response = getStats();
+if ($response['status'] == 200) {
+    $data = $response['data'];
+    $matchsStats = $data['Stats'];
+    $joueurs = $data['Tab'];
+    $totalMatchs = $matchsStats['totalMatchs'];
+    $pourcentageGagnés = $matchsStats['pourcentageGagnés'];
+    $pourcentageNuls = $matchsStats['pourcentageNuls'];
+    $pourcentagePerdus = $matchsStats['pourcentagePerdus'];
+} else {
+    echo "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Unknown");
 }
 ?>

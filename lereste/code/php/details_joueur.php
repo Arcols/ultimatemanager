@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'connection_bd.php';
-require_once 'validate_token.php';
+require_once './../../../backend/validate_token.php';
 validate_token();
 
 function calculateAge($date_naissance) {
@@ -66,7 +66,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             if(isset($_POST['delete'])){
                 $deleteStmt = $pdo->prepare("DELETE FROM joueur WHERE Id_joueur = :id");
                 $deleteStmt->execute([':id' => $IdJoueur]);
-                header("Location: joueur.php");
+                header("Location: joueurs.php");
                 exit;
             }
             $joueur['Numéro_de_licence'] = $licence;

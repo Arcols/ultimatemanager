@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($response['status'] == 200 && isset($response['data']['token'])) {
         $_SESSION['jwt_token'] = $response['data']['token'];
-        header('Location: ./../pages/joueur.html.php');
+        header('Location: ./../pages/joueurs.html.php');
         exit;
     } else {
         echo "Erreur  " . $response['status'] . " : " . ($response['status_message'] ?? "Inconnue");

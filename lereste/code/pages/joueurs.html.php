@@ -18,7 +18,7 @@
         <h1>Gestion des Joueurs</h1>
 
         <!-- Inclusion du fichier PHP qui récupère les joueurs -->
-        <?php include './../php/joueur.php'; ?>
+        <?php include './../php/joueurs.php'; ?>
 
         <?php if ($error): ?>
             <p><?= $error ?></p>

@@ -1,6 +1,6 @@
 <?php
 require_once 'connection_bd.php';
-require_once 'validate_token.php';
+require_once './../../../backend/validate_token.php';
 session_start();
 validate_token();
 
