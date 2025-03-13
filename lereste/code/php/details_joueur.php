@@ -2,7 +2,6 @@
 session_start();
 require_once 'connection_bd.php';
 require_once './../../../backend/validate_token.php';
-validate_token();
 
 $joueur = [];
 $error = null;

@@ -4,9 +4,8 @@ require_once 'connection_bd.php';
 session_start();
 
 require_once './../../../backend/validate_token.php';
-validate_token();
 function getMatches(){
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backEnd/endpointMatchs.php';
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -45,7 +44,7 @@ function getMatches(){
 }
 
 function addMatch($date_heure,$nom_adversaires,$lieu,$resultatMonEquipe,$resultatEquipeAdverse){
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backEnd/endpointMatchs.php';
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
 
     // Initialize cURL
     $ch = curl_init($url);
