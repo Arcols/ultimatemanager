@@ -2,20 +2,14 @@
 
 require_once 'connection_bd.php';
 require_once 'gestionJoueurs.php';
+require_once 'function.php';
 
 $linkpdo = connectionToDB();
 
 if (is_string($linkpdo)) {
-    // If the connection fails, display the error message
-    header('Content-Type: application/json');
-    echo json_encode(['error' => $linkpdo]);
+    deliver_response(500, $linkpdo);
     exit;
 }
-
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Allow all origins (CORS)
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'); // Allow HTTP methods
-header('Access-Control-Allow-Headers: Content-Type'); // Allow specific headers
 
 $http_method = $_SERVER['REQUEST_METHOD'];
 switch ($http_method) {

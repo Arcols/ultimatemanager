@@ -34,10 +34,6 @@
             <p><?php echo $errorMessage; ?></p>
         <?php endif; ?>
 
-        <?php if (!empty($successMessage)): ?>
-            <p><?php echo $successMessage; ?></p>
-        <?php endif; ?>
-
         <!-- Table des matchs -->
         <table>
             <thead>
@@ -81,7 +77,7 @@
         </table>
 
         <!-- Formulaire pour ajouter un match -->
-        <form method="POST" action="../php/nouveau_match.php">
+        <form method="POST" action="../php/matchs.php">
             <p>
                 <label for="date_heure">Date </label>
                 <input type="datetime-local" id="date_heure" name="date_heure" required>

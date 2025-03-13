@@ -23,9 +23,7 @@ switch ($method) {
                     exit;
                 }
 
-                $stmt = $pdo->prepare("SELECT mdp FROM utilisateurs WHERE login = :login");
-                $stmt->execute([':login' => $login]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                $user = getUser($pdo, $login);
 
                 if (!$user || $mdp_hache !== $user['mdp']) {
                     deliver_response(401, 'Identifiant ou mot de passe incorrect.');
@@ -79,9 +77,7 @@ switch ($method) {
                 exit;
             }
 
-            $stmt = $pdo->prepare("INSERT INTO utilisateurs (login, mdp) VALUES (:login, :mdp)");
-            $stmt->execute([':login' => $login, ':mdp' => $mdp_hache]);
-
+            insertUser($pdo, $login, $mdp_hache);
             deliver_response(201, 'Utilisateur créé avec succès.');
         } catch (Exception $e) {
             error_log("Erreur serveur: " . $e->getMessage());

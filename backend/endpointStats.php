@@ -2,20 +2,14 @@
 
 require_once 'connection_bd.php';
 require_once 'gestionStats.php';
+require_once 'function.php';
 
 $linkpdo = connectionToDB();
 
 if (is_string($linkpdo)) {
-    // Si la connexion échoue, afficher le message d'erreur
-    header('Content-Type: application/json');
-    echo json_encode(['error' => $linkpdo]);
+    deliver_response(500, $linkpdo);
     exit;
 }
-
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Autorise toutes les origines (CORS)
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'); // Autorise les méthodes HTTP
-header('Access-Control-Allow-Headers: Content-Type'); // Autorise les en-têtes spécifiques
 
 $http_method = $_SERVER['REQUEST_METHOD'];
 switch ($http_method) {
