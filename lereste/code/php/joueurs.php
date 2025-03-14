@@ -105,7 +105,7 @@ try {
             exit;
         } else {
             if($response['status'] == 401) {
-                header('Location: ./../../login.php');
+                header('Location: ./../pages/connexion.html.php');
                 exit;
             }
             $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
@@ -116,7 +116,7 @@ try {
             $joueurs = $response['data'];
         } else {
             if($response['status'] == 401) {
-                header('Location: ./../../login.php');
+                header('Location: ./../pages/connexion.html.php');
                 exit;
             }
             $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
