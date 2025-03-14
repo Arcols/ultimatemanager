@@ -3,6 +3,12 @@
 require_once 'connection_bd.php';
 require_once 'gestionMatchs.php';
 require_once 'function.php';
+require_once 'validate_token.php';
+
+if(!validate_token(getBearerToken())) {
+    deliver_response(401, "Vous n'avez pas un token valide");
+    exit;
+}
 
 $linkpdo = connectionToDB();
 if (is_string($linkpdo)) {

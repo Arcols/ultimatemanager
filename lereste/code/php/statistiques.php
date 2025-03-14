@@ -1,6 +1,7 @@
 <?php
+session_start();
 function getStats() {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointStats.php';
+    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backEnd/endpointStats.php';
     // Initialize cURL
     $ch = curl_init($url);
 
@@ -9,7 +10,8 @@ function getStats() {
     curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -37,7 +39,6 @@ function getStats() {
     return array_merge(['status' => $http_code], $response);
 }
 
-// Example usage
 $response = getStats();
 if ($response['status'] == 200) {
     $data = $response['data'];
@@ -48,6 +49,10 @@ if ($response['status'] == 200) {
     $pourcentageNuls = $matchsStats['pourcentageNuls'];
     $pourcentagePerdus = $matchsStats['pourcentagePerdus'];
 } else {
+    if($response['status'] == 401) {
+        header('Location: ./../../login.php');
+        exit;
+    }
     echo "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
 }
 ?>

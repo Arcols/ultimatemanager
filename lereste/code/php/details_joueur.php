@@ -23,7 +23,8 @@ function getJoueurDetails($idJoueur) {
     curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -63,7 +64,8 @@ function updateJoueurDetails($data) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set PUT fields
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -102,7 +104,8 @@ function deleteJoueur($idJoueur){
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE"); // Use DELETE method
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -142,6 +145,10 @@ try {
                     header('Location: ./../pages/joueurs.html.php');
                     exit;
                 } else {
+                    if($response['status'] == 401) {
+                        header('Location: ./../../login.php');
+                        exit;
+                    }
                     $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
                 }
             }
@@ -158,6 +165,11 @@ try {
             if ($response['status'] == 200) {
                 $message = "Les informations ont été mises à jour avec succès.";
                 header('Location: ./../pages/joueurs.html.php');
+            }else {
+                if ($response['status'] == 401) {
+                    header('Location: ./../../login.php');
+                    exit;
+                }
             }
         } else {
             $response = getJoueurDetails($idJoueur);

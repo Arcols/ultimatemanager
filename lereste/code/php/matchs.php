@@ -15,7 +15,8 @@ function getMatches(){
     curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -61,7 +62,8 @@ function addMatch($date_heure,$nom_adversaires,$lieu,$resultatMonEquipe,$resulta
     ]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification

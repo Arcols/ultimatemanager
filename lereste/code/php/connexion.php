@@ -12,7 +12,8 @@ function login($login, $mdp) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
