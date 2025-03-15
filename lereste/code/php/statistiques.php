@@ -55,4 +55,5 @@ if ($response['status'] == 200) {
     }
     echo "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
 }
+
 ?>
