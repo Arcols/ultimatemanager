@@ -1,8 +1,46 @@
 <?php
 session_start();
 
-require_once './../../../backend/validate_token.php';
 require_once 'connection_bd.php';
+
+function getJoueursEtMatch($id) {
+    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
+}
 
 $idMatch = null;
 $match = null;
@@ -11,15 +49,11 @@ $errorMessage = null;
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $idMatch = intval($_GET['id']);
-
-
     try {
         $pdo = connectionToDB();
-
-        // Requête pour récupérer les informations du match
-        $stmt = $pdo->prepare("SELECT * FROM rencontre WHERE Id_Match = :id");
-        $stmt->execute([':id' => $idMatch]);
-        $match = $stmt->fetch(PDO::FETCH_ASSOC);
+        $response = getJoueursEtMatch($idMatch);
+        $match = $response['data']['match'] ?? null;
+        $participants = $response['data']['participants'] ?? [];
 
         if ($match) {
             // Vérifier si la date du match est après la date actuelle
@@ -30,14 +64,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 header("Location: details_avant_match.html.php?id=" . $idMatch);
                 exit;
             }
-
-            // Récupération des participants
-            $stmtParticipants = $pdo->prepare("SELECT J.Id_joueur, J.Nom, J.Prénom, P.Poste, P.Role AS Role, P.Note 
-                                                FROM joueur J, participer P
-                                                WHERE J.Id_joueur = P.Id_joueur 
-                                                AND P.Id_Match = :idMatch");
-            $stmtParticipants->execute([':idMatch' => $idMatch]);
-            $participants = $stmtParticipants->fetchAll(PDO::FETCH_ASSOC);
         } else {
             $errorMessage = "Match introuvable.";
         }

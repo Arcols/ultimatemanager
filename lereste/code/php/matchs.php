@@ -3,7 +3,6 @@ require_once 'connection_bd.php';
 
 session_start();
 
-require_once './../../../backend/validate_token.php';
 function getMatches(){
     $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
 
@@ -44,7 +43,7 @@ function getMatches(){
     return array_merge(['status' => $http_code], $response);
 }
 
-function addMatch($date_heure,$nom_adversaires,$lieu,$resultatMonEquipe,$resultatEquipeAdverse){
+function addMatch($date_heure, $nom_adversaires, $lieu, $resultatMonEquipe, $resultatEquipeAdverse){
     $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
 
     // Initialize cURL
@@ -92,45 +91,43 @@ function addMatch($date_heure,$nom_adversaires,$lieu,$resultatMonEquipe,$resulta
 }
 
 try {
-    $filtre = isset($_GET['filtre']) ?? 'tous';
-    $http_request=$_SERVER['REQUEST_METHOD'];
-    switch ($http_request) {
-        case 'GET' :
-            $matches=getMatches();
-            $matchs = [];
-            if($matches['status']==200){
-                $matchs=$matches['data']['matchs'];
-                $matchsAVenir=$matches['data']['matchsAVenir'];
-                $matchsPasses=$matches['data']['matchsPasses'];
-                if ($filtre === 'passes') {
-                    $matchs=$matchsPasses;
-                } elseif ($filtre === 'avenir') {
-                    $matchs=$matchsAVenir;
-                }
-            }else{
-                $errorMessage=$matches['status_message'];
-            }
-            $rows = $matchs;
-            break;
+    $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : 'tous';
+    $http_request = $_SERVER['REQUEST_METHOD'];
 
-        case 'POST' :
-            if (isset($_POST['date_heure'], $_POST['nom_adversaires'], $_POST['lieu'])) {
-                // Récupérer les données du formulaire
-                $date_heure = $_POST['date_heure'];
-                $nom_adversaires = htmlspecialchars($_POST['nom_adversaires']);
-                $lieu = htmlspecialchars($_POST['lieu']);
-                $resulatMonEquipe = htmlspecialchars($_POST['resultat1']);
-                $resultatEquipeAdverse = htmlspecialchars($_POST['resultat2']);
-                $response = addMatch($date_heure,$nom_adversaires,$lieu,$resulatMonEquipe,$resultatEquipeAdverse);
-                if($response['status']==201){
-                    header('Location: ./../pages/matchs.html.php?success=1');
-                    exit;
-                }else{
-                    $errorMessage=$response['status_message'];
-                    header('Location: ./../pages/matchs.html.php?error='.$errorMessage);
-                }
+    if ($http_request === 'POST') {
+        if (isset($_POST['date_heure'], $_POST['nom_adversaires'], $_POST['lieu'])) {
+            // Récupérer les données du formulaire
+            $date_heure = $_POST['date_heure'];
+            $nom_adversaires = htmlspecialchars($_POST['nom_adversaires']);
+            $lieu = htmlspecialchars($_POST['lieu']);
+            $resulatMonEquipe = htmlspecialchars($_POST['resultat1']);
+            $resultatEquipeAdverse = htmlspecialchars($_POST['resultat2']);
+            $response = addMatch($date_heure, $nom_adversaires, $lieu, $resulatMonEquipe, $resultatEquipeAdverse);
+            if ($response['status'] == 201) {
+                header('Location: ./../pages/matchs.html.php?success=1');
+                exit;
+            } else {
+                $errorMessage = $response['status_message'];
+                header('Location: ./../pages/matchs.html.php?error=' . $errorMessage);
             }
+        }
     }
+
+    $matches = getMatches();
+    $matchs = [];
+    if ($matches['status'] == 200) {
+        $matchs = $matches['data']['matchs'];
+        $matchsAVenir = $matches['data']['matchsAVenir'];
+        $matchsPasses = $matches['data']['matchsPasses'];
+        if ($filtre === 'passes') {
+            $matchs = $matchsPasses;
+        } elseif ($filtre === 'avenir') {
+            $matchs = $matchsAVenir;
+        }
+    } else {
+        $errorMessage = $matches['status_message'];
+    }
+    $rows = $matchs;
 
     // Définir l'heure actuelle
     $currentDateTime = new DateTime();

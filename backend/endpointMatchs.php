@@ -36,9 +36,10 @@ switch ($http_method) {
         $resultatMonEquipe = $input['resultatMonEquipe'] ?? null;
         $resultatAdversaire = $input['resultatAdversaire'] ?? null;
         if($date_heure && $nom_adversaires && $lieu){
-            if(empty($resultatMonEquipe) || empty($resultatAdversaire) && new DateTime($date_heure) < new DateTime()){
-                deliver_response(400, "Vous devez renseigner les résultats pour un match qui est déjà passé");
-                break;
+            if(empty($resultatMonEquipe) || empty($resultatAdversaire) ){
+                if(new DateTime($date_heure) < new DateTime()){
+                    deliver_response(400, "Vous devez renseigner les résultats pour un match qui est déjà passé");
+                }
             }
             insertMatch($linkpdo, $date_heure, $nom_adversaires, $lieu, $resultatMonEquipe, $resultatAdversaire);
             deliver_response(201, "Match created");

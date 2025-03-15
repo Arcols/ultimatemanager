@@ -1,6 +1,146 @@
 <?php
 require_once 'connection_bd.php';
-require_once './../../../backend/validate_token.php';
+
+function recupererJoueursSelectionnes() {
+    $joueursMatch = [];
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'choix_') === 0) {
+            $idJoueur = substr($key, 6);
+            $poste = $_POST['poste_' . $idJoueur] ?? '';
+            $role = $_POST['role_' . $idJoueur] ?? '';
+            $joueursMatch[] = [
+                'id' => intval($idJoueur),
+                'poste' => $poste,
+                'role' => $role,
+                "Authorization: Bearer " . $_SESSION['jwt_token']
+            ];
+        }
+    }
+    return ['joueursMatch' => $joueursMatch];
+}
+
+function updateDate($data,$id) {
+    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT"); // Use PUT method
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set PUT fields
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
+}
+
+function deleteMatch($id){
+    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE"); // Use DELETE method
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
+}
+
+function updateFeuilleMatchWithPlayer($data,$id){
+    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST"); // Use POST method
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set POST fields
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
+}
+
 try {
     $pdo = connectionToDB();
 
@@ -12,94 +152,41 @@ try {
 
     // Si l'action est de supprimer le match
     if (isset($_POST['action']) && $_POST['action'] === 'supprimer') {
-        echo("Supprimer");
-        // Supprimer les joueurs associés à ce match
-        $stmt = $pdo->prepare("DELETE FROM participer WHERE Id_Match = :idMatch");
-        $stmt->execute([':idMatch' => intval($idMatch)]);
-
-        // Supprimer le match
-        $stmt = $pdo->prepare("DELETE FROM rencontre WHERE Id_Match = :idMatch");
-        $stmt->execute([':idMatch' => intval($idMatch)]);
-
-        // Redirection après la suppression
-        header("Location: ./../pages/matchs.html.php");
-        exit;  // Assurez-vous d'ajouter exit pour stopper le script après la redirection
+        $response=deleteMatch($idMatch);
+        if ($response['status'] === 200) {
+            header("Location: ./../pages/matchs.html.php");
+            exit;
+        } else {
+            header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=".$response['status_message']);
+            exit;
+        }
     }
 
     // Modifier la date du match si elle est fournie
     if (!empty($_POST['nouvelle_date'])) {
         $nouvelleDate = $_POST['nouvelle_date'];
-        $stmt = $pdo->prepare("UPDATE rencontre SET Date_Heure = :nouvelleDate WHERE Id_Match = :idMatch");
-        $stmt->execute([
-            ':nouvelleDate' => $nouvelleDate,
-            ':idMatch' => intval($idMatch),
-        ]);
-    }
-
-    // Compter le nombre de titulaires sélectionnés dans le formulaire
-    $titulairesSelectionnes = 0;
-    $joueursSelectionnes = [];
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'choix_') === 0) {
-            $idJoueur = substr($key, 6);
-            $joueursSelectionnes[] = $idJoueur;
-
-            // Récupérer le rôle du joueur (titulaire ou remplaçant)
-            $role = $_POST['role_' . $idJoueur] ?? '';
-
-            // Si le rôle est "Titulaires", on incrémente le compteur
-            if ($role === 'Titulaire') {
-                $titulairesSelectionnes++;
-            }
+        $data = [
+            'nouvelle_date' => $nouvelleDate
+        ];
+        $response = updateDate($data,$idMatch);
+        if ($response['status'] === 200) {
+            header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch));
+            exit;
+        } else {
+            header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=".$response['status_message']);
+            exit;
         }
     }
 
-    // Vérifier si le nombre de titulaires sélectionnés est exactement 7
-    if ($titulairesSelectionnes !== 7) {
-        // Si le nombre de titulaires n'est pas 7, rediriger avec un message d'erreur dans l'URL
-        header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=titulaires");
-        exit;  // Ajouter exit ici pour éviter que le code continue après la redirection
+    $joueursSelectionnes = recupererJoueursSelectionnes();
+    $response = updateFeuilleMatchWithPlayer($joueursSelectionnes, $idMatch);
+    if ($response['status'] === 200) {
+        header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch));
+        exit;
+    } else {
+        header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=".$response['status_message']);
+        exit;
     }
-
-    // Récupérer les joueurs actuellement enregistrés pour ce match
-    $stmt = $pdo->prepare("SELECT Id_joueur FROM participer WHERE Id_Match = :idMatch");
-    $stmt->execute([':idMatch' => intval($idMatch)]);
-    $joueursExistants = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    // Insérer ou mettre à jour les joueurs sélectionnés dans la table "Participer"
-    foreach ($joueursSelectionnes as $idJoueur) {
-        $poste = $_POST['poste_' . $idJoueur] ?? '';
-        $role = $_POST['role_' . $idJoueur] ?? '';
-
-        // Requête pour insérer ou mettre à jour le joueur dans la table "Participer"
-        $stmt = $pdo->prepare("
-            INSERT INTO participer (Id_joueur, Id_Match, Poste, Role)
-            VALUES (:idJoueur, :idMatch, :poste, :role)
-            ON DUPLICATE KEY UPDATE Poste = :poste, Role = :role
-        ");
-        $stmt->execute([
-            ':idJoueur' => $idJoueur,
-            ':idMatch' => intval($idMatch),
-            ':poste' => $poste,
-            ':role' => $role,
-        ]);
-    }
-
-    // Détecter les joueurs qui ne sont plus sélectionnés et les supprimer
-    $joueursASupprimer = array_diff($joueursExistants, $joueursSelectionnes);
-    if (!empty($joueursASupprimer)) {
-        $stmt = $pdo->prepare("DELETE FROM participer WHERE Id_Match = :idMatch AND Id_joueur = :idJoueur");
-        foreach ($joueursASupprimer as $idJoueurASupprimer) {
-            $stmt->execute([
-                ':idMatch' => intval($idMatch),
-                ':idJoueur' => $idJoueurASupprimer,
-            ]);
-        }
-    }
-
-    // Redirection vers la page des détails du match après la soumission
-    header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch));
-    exit;  // Assurez-vous d'ajouter exit ici aussi
 } catch (PDOException $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
 } catch (Exception $e) {
