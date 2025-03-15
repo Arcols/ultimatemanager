@@ -18,7 +18,7 @@
         <h1>Gestion des Joueurs</h1>
 
         <!-- Inclusion du fichier PHP qui récupère les joueurs -->
-        <?php include './../php/joueurs.php'; ?>
+        <?php include './../appelsAPI/joueurs.php'; ?>
 
         <?php if ($error): ?>
             <p><?= $error ?></p>
@@ -59,7 +59,7 @@
         <h2>Ajouter un joueur</h2>
 
         <!-- Formulaire d'ajout d'un joueur -->
-        <form method="POST" action="../php/joueurs.php">
+        <form method="POST" action="../appelsAPI/joueurs.php">
             <!-- Champs pour les informations du joueur -->
             <p>
                 <label for="nom">Nom du Joueur</label>

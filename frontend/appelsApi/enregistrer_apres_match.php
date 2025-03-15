@@ -1,6 +1,6 @@
 <?php
-require_once 'connection_bd.php';
 
+session_start();
 function update($data,$id) {
     $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
 
@@ -43,8 +43,6 @@ function update($data,$id) {
 }
 
 try {
-    $pdo = connectionToDB();
-
     // Récupérer l'identifiant du match depuis le POST
     $idMatch = $_POST['id_match'] ?? null;
 
@@ -90,9 +88,6 @@ try {
     // Redirection vers la page details_apres_match.html.php
     header("Location: ./../pages/details_apres_match.html.php?id=" . intval($idMatch));
     exit;
-
-} catch (PDOException $e) {
-    echo "Erreur : " . htmlspecialchars($e->getMessage());
 } catch (Exception $e) {
     echo "Erreur : " . htmlspecialchars($e->getMessage());
 }

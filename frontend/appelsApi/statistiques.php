@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 function getStats() {
     $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointStats.php';
     // Initialize cURL

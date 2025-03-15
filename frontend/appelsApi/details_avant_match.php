@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once 'connection_bd.php';
 
 function getJoueursEtMatch($id) {
     $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id=' . $id;
@@ -51,21 +50,15 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $match = $response['data']['match'] ?? null;
     $players = $response['data']['joueurs'] ?? [];
 
-    try {
-        $pdo = connectionToDB();
-
-        if ($match) {
-            $dateMatch = new DateTime($match['Date_Heure']);
-            $currentDate = new DateTime();
-            if ($dateMatch < $currentDate) {
-                header("Location: details_apres_match.html.php?id=" . $idMatch);
-                exit;
-            }
+    if ($match) {
+        $dateMatch = new DateTime($match['Date_Heure']);
+        $currentDate = new DateTime();
+        if ($dateMatch < $currentDate) {
+            header("Location: details_apres_match.html.php?id=" . $idMatch);
+            exit;
         }
-
-    } catch (PDOException $e) {
-        $errorMessage = htmlspecialchars($e->getMessage());
     }
+
 } else {
     $idMatch = null;
     $match = null;

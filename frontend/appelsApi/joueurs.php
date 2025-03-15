@@ -1,11 +1,10 @@
 <?php
-require_once 'connection_bd.php';
-
 session_start();
 
-function getMatches(){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
-
+$joueurs = [];
+$error = null;
+function getJoueurs() {
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointJoueurs.php';
     // Initialize cURL
     $ch = curl_init($url);
 
@@ -16,6 +15,7 @@ function getMatches(){
         "Content-Type: application/json",
         "Accept: application/json",
         "Authorization: Bearer " . $_SESSION['jwt_token']
+
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -43,8 +43,8 @@ function getMatches(){
     return array_merge(['status' => $http_code], $response);
 }
 
-function addMatch($date_heure, $nom_adversaires, $lieu, $resultatMonEquipe, $resultatEquipeAdverse){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
+function postJoueur($data) {
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointJoueurs.php';
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -52,13 +52,7 @@ function addMatch($date_heure, $nom_adversaires, $lieu, $resultatMonEquipe, $res
     // Set cURL options
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true); // Use POST method
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-        'date_heure' => $date_heure,
-        'nom_adversaires' => $nom_adversaires,
-        'lieu' => $lieu,
-        'resultatMonEquipe' => $resultatMonEquipe,
-        'resultatAdversaire' => $resultatEquipeAdverse
-    ]));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set POST fields
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
         "Accept: application/json",
@@ -91,51 +85,50 @@ function addMatch($date_heure, $nom_adversaires, $lieu, $resultatMonEquipe, $res
 }
 
 try {
-    $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : 'tous';
-    $http_request = $_SERVER['REQUEST_METHOD'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = [
+            'numLic' => $_POST['numLic'] ?? null,
+            'nom' => $_POST['nom'] ?? null,
+            'prénom' => $_POST['prénom'] ?? null,
+            'date_naissance' => $_POST['date_naissance'] ?? null,
+            'taille' => $_POST['taille'] ?? null,
+            'poid' => $_POST['poid'] ?? null,
+            'commentaire' => $_POST['commentaire'] ?? null,
+            'statut' => $_POST['statut'] ?? null
+        ];
 
-    if ($http_request === 'POST') {
-        if (isset($_POST['date_heure'], $_POST['nom_adversaires'], $_POST['lieu'])) {
-            // Récupérer les données du formulaire
-            $date_heure = $_POST['date_heure'];
-            $nom_adversaires = htmlspecialchars($_POST['nom_adversaires']);
-            $lieu = htmlspecialchars($_POST['lieu']);
-            $resulatMonEquipe = htmlspecialchars($_POST['resultat1']);
-            $resultatEquipeAdverse = htmlspecialchars($_POST['resultat2']);
-            $response = addMatch($date_heure, $nom_adversaires, $lieu, $resulatMonEquipe, $resultatEquipeAdverse);
-            if ($response['status'] == 201) {
-                header('Location: ./../pages/matchs.html.php?success=1');
+        $response = postJoueur($data);
+        if ($response['status'] == 201) {
+            header('Location: ./../pages/joueurs.html.php');
+            exit;
+        } else {
+            if($response['status'] == 401) {
+                header('Location: ./../pages/connexion.html.php');
                 exit;
-            } else {
-                $errorMessage = $response['status_message'];
-                header('Location: ./../pages/matchs.html.php?error=' . $errorMessage);
             }
-        }
-    }
-
-    $matches = getMatches();
-    $matchs = [];
-    if ($matches['status'] == 200) {
-        $matchs = $matches['data']['matchs'];
-        $matchsAVenir = $matches['data']['matchsAVenir'];
-        $matchsPasses = $matches['data']['matchsPasses'];
-        if ($filtre === 'passes') {
-            $matchs = $matchsPasses;
-        } elseif ($filtre === 'avenir') {
-            $matchs = $matchsAVenir;
+            $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
         }
     } else {
-        $errorMessage = $matches['status_message'];
+        $response = getJoueurs();
+        if ($response['status'] == 200) {
+            $joueurs = $response['data'];
+        } else {
+            if($response['status'] == 401) {
+                header('Location: ./../pages/connexion.html.php');
+                exit;
+            }
+            $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
+        }
     }
-    $rows = $matchs;
 
-    // Définir l'heure actuelle
-    $currentDateTime = new DateTime();
-} catch (PDOException $e) {
-    die("Erreur : " . htmlspecialchars($e->getMessage()));
+    // Function to calculate age
+    function calculateAge($date_naissance) {
+        $date_naissance = new DateTime($date_naissance);
+        $today = new DateTime();
+        return $today->diff($date_naissance)->y;
+    }
+
+} catch (Exception $e) {
+    $error = "Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
 }
-
-// Variables de message d'erreur ou de succès
-$errorMessage = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
-
 ?>

@@ -15,7 +15,7 @@
     <div class="main">
         <h1>Détails du Match</h1>
         <!-- Inclusion du fichier PHP qui gère la logique des détails du match -->
-        <?php include './../php/details_apres_match.php'; ?>
+        <?php include './../appelsAPI/details_apres_match.php'; ?>
 
         <!-- Affichage des messages d'erreur ou des informations du match -->
         <?php if ($errorMessage): ?>
@@ -27,7 +27,7 @@
             <p><strong>Adversaire :</strong> <?= htmlspecialchars($match['Nom_adversaire']) ?></p>
 
             <!-- Formulaire pour enregistrer les détails du match (score, notes, etc.) -->
-            <form method="POST" action="../php/enregistrer_apres_match.php">
+            <form method="POST" action="../appelsAPI/enregistrer_apres_match.php">
                 <input type="hidden" name="id_match" value="<?= htmlspecialchars($idMatch) ?>">
 
                 <!-- Section pour saisir le score -->

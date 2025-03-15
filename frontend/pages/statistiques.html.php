@@ -17,7 +17,7 @@
     <h1>Statistiques</h1>
 
     <!-- Inclusion du fichier PHP qui récupère les statistiques des matchs -->
-    <?php include './../php/statistiques.php'; ?>
+    <?php include './../appelsAPI/statistiques.php'; ?>
 
     <!-- Affichage des statistiques générales -->
     <p>Nombre total de matchs gagnés : <?= $matchsStats['gagnés'] ?></p>

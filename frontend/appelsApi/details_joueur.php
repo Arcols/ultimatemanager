@@ -1,26 +1,57 @@
 <?php
-require_once 'connection_bd.php';
+session_start();
 
-function recupererJoueursSelectionnes() {
-    $joueursMatch = [];
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'choix_') === 0) {
-            $idJoueur = substr($key, 6);
-            $poste = $_POST['poste_' . $idJoueur] ?? '';
-            $role = $_POST['role_' . $idJoueur] ?? '';
-            $joueursMatch[] = [
-                'id' => intval($idJoueur),
-                'poste' => $poste,
-                'role' => $role,
-                "Authorization: Bearer " . $_SESSION['jwt_token']
-            ];
-        }
-    }
-    return ['joueursMatch' => $joueursMatch];
+$joueur = [];
+$error = null;
+
+function calculateAge($date_naissance) {
+    $date_naissance = new DateTime($date_naissance);
+    $today = new DateTime();
+    return $today->diff($date_naissance)->y;
 }
 
-function updateDate($data,$id) {
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+function getJoueurDetails($idJoueur) {
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointDetailsJoueur.php?id=' . $idJoueur;
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
+
+    // Execute the request
+    $result = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        $curl_error = curl_error($ch);
+        print("cURL error: " . $curl_error);
+        curl_close($ch);
+        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
+    }
+
+    curl_close($ch);
+
+    // Check if the response is valid JSON
+    $response = json_decode($result, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        print("JSON error: " . json_last_error_msg());
+        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
+    }
+
+    return array_merge(['status' => $http_code], $response);
+}
+
+function updateJoueurDetails($data) {
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointDetailsJoueur.php';
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -60,8 +91,8 @@ function updateDate($data,$id) {
     return array_merge(['status' => $http_code], $response);
 }
 
-function deleteMatch($id){
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+function deleteJoueur($idJoueur){
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointDetailsJoueur.php?id=' . $idJoueur;
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -100,95 +131,56 @@ function deleteMatch($id){
     return array_merge(['status' => $http_code], $response);
 }
 
-function updateFeuilleMatchWithPlayer($data,$id){
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
-
-    // Initialize cURL
-    $ch = curl_init($url);
-
-    // Set cURL options
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST"); // Use POST method
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set POST fields
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Content-Type: application/json",
-        "Accept: application/json",
-        "Authorization: Bearer " . $_SESSION['jwt_token']
-    ]);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
-
-    // Execute the request
-    $result = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    if ($result === false) {
-        $curl_error = curl_error($ch);
-        print("cURL error: " . $curl_error);
-        curl_close($ch);
-        return array('status' => 500, 'status_message' => 'Server error', 'data' => null);
-    }
-
-    curl_close($ch);
-
-    // Check if the response is valid JSON
-    $response = json_decode($result, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        print("JSON error: " . json_last_error_msg());
-        return array('status' => 500, 'status_message' => 'JSON error', 'data' => null);
-    }
-
-    return array_merge(['status' => $http_code], $response);
-}
-
 try {
-    $pdo = connectionToDB();
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+        $idJoueur = intval($_GET['id']);
 
-    // Récupérer l'identifiant du match depuis le POST
-    $idMatch = $_POST['id_match'] ?? null;
-    if (!$idMatch) {
-        throw new Exception("ID du match non spécifié.");
-    }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if(isset($_POST['delete']))
+            {
+                $response = deleteJoueur($idJoueur);
+                if ($response['status'] == 200) {
+                    header('Location: ./../pages/joueurs.html.php');
+                    exit;
+                } else {
+                    if($response['status'] == 401) {
+                        header('Location: ./../pages/connexion.html.php');
+                        exit;
+                    }
+                    $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
+                }
+            }
+            $data = [
+                'id' => $idJoueur,
+                'licence' => $_POST['licence'] ?? null,
+                'taille' => $_POST['taille'] ?? null,
+                'poid' => $_POST['poid'] ?? null,
+                'commentaire' => $_POST['commentaire'] ?? null,
+                'status' => $_POST['status'] ?? null
+            ];
 
-    // Si l'action est de supprimer le match
-    if (isset($_POST['action']) && $_POST['action'] === 'supprimer') {
-        $response=deleteMatch($idMatch);
-        if ($response['status'] === 200) {
-            header("Location: ./../pages/matchs.html.php");
-            exit;
+            $response = updateJoueurDetails($data);
+            if ($response['status'] == 200) {
+                $message = "Les informations ont été mises à jour avec succès.";
+                header('Location: ./../pages/joueurs.html.php');
+            }else {
+                if ($response['status'] == 401) {
+                    header('Location: ./../pages/connexion.html.php');
+                    exit;
+                }
+            }
         } else {
-            header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=".$response['status_message']);
-            exit;
+            $response = getJoueurDetails($idJoueur);
+            if ($response['status'] == 200) {
+                $joueur = $response['data'];
+            } else {
+                $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
+            }
         }
-    }
-
-    // Modifier la date du match si elle est fournie
-    if (!empty($_POST['nouvelle_date'])) {
-        $nouvelleDate = $_POST['nouvelle_date'];
-        $data = [
-            'nouvelle_date' => $nouvelleDate
-        ];
-        $response = updateDate($data,$idMatch);
-        if ($response['status'] === 200) {
-            header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch));
-            exit;
-        } else {
-            header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=".$response['status_message']);
-            exit;
-        }
-    }
-
-    $joueursSelectionnes = recupererJoueursSelectionnes();
-    $response = updateFeuilleMatchWithPlayer($joueursSelectionnes, $idMatch);
-    if ($response['status'] === 200) {
-        header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch));
-        exit;
     } else {
-        header("Location: ./../pages/details_avant_match.html.php?id=" . intval($idMatch) . "&error=".$response['status_message']);
-        exit;
+        $error = "Identifiant de joueur invalide.";
     }
-} catch (PDOException $e) {
-    echo "Erreur : " . htmlspecialchars($e->getMessage());
 } catch (Exception $e) {
-    echo "Erreur : " . htmlspecialchars($e->getMessage());
+    $error = "Erreur : " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
 }
+?>
