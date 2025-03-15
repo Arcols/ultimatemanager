@@ -55,7 +55,7 @@
                 <td><?= $joueur['Titularisations'] ?></td>
                 <td><?= $joueur['Remplacements'] ?></td>
                 <td><?= $joueur['Evaluation'] ?></td>
-                <td><?= $joueur['MatchsGagnés'] ?>%</td>
+                <td><?= $joueur['MatchsGagnés'] ?></td>
                 <td><?= $joueur['SelectionConsecutive'] ?></td>
             </tr>
         <?php endforeach; ?>
