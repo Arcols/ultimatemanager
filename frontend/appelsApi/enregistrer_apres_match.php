@@ -2,7 +2,7 @@
 
 session_start();
 function update($data,$id) {
-    $url = 'http://localhost/BUT/R3.01/ultimatemanager/backend/endpointFeuilleMatch.php?id='.$id;
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointFeuilleMatch.php?id='.$id;
 
     // Initialize cURL
     $ch = curl_init($url);

@@ -16,11 +16,11 @@
         <!-- Formulaire de connexion -->
         <form method="POST" action="">
             <div>
-                <img src="./../ressources/person-fill.svg" alt="Identifiant">
+                <img src="../ressources/person-fill.svg" alt="Identifiant">
                 <input type="text" name="login" placeholder="Identifiant" required><br>
             </div>
             <div>
-                <img src="./../ressources/key.svg" alt="Mot de passe">
+                <img src="../ressources/key.svg" alt="Mot de passe">
                 <input type="password" name="mdp" placeholder="Mot de passe" required><br>
             </div>
             
@@ -28,7 +28,7 @@
         </form>
 
         <!-- Zone pour les messages d'erreur -->
-        <?php include './../appelsAPI/connexion.php'; ?>
+        <?php include __DIR__ . '/../appelsApi/connexion.php'; ?>
     </div>
 </body>
 </html>

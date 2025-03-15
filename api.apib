@@ -1,0 +1,83 @@
+# API Gestion Matchs
+
+## Joueur [/backend/endpointDetailsJoueur.php]
+### Récupérer les détails d'un joueur [GET]
++ Parameters
+    + id (required, number) - ID du joueur
+
++ Response 200 (application/json)
+    + Attributes
+        + id (number) - ID du joueur
+        + nom (string) - Nom du joueur
+        + prenom (string) - Prénom du joueur
+        + equipe (string) - Équipe du joueur
+
++ Response 400
+    + Description: ID invalide
++ Response 404
+    + Description: Joueur non trouvé
++ Response 401
+    + Description: Token invalide
+
+## Feuille Match [/backend/endpointFeuilleMatch.php]
+### Créer ou récupérer une feuille de match [POST, GET]
++ Parameters
+    + id (required, number) - ID du match
+
++ Response 201 (application/json)
+    + Description: Feuille de match créée avec succès
+    + Attributes
+        + idFeuille (number) - ID de la feuille de match
+        + joueurs (array) - Liste des joueurs
+        + score (string) - Score du match
+
++ Response 400
+    + Description: ID invalide
++ Response 404
+    + Description: Match non trouvé
+
+## Joueurs [/backend/endpointJoueurs.php]
+### Récupérer la liste des joueurs [GET]
++ Response 200 (application/json)
+    + Attributes
+        + joueurs (array) - Liste des joueurs
+            + id (number) - ID du joueur
+            + nom (string) - Nom du joueur
+            + equipe (string) - Équipe du joueur
+
++ Response 400
+    + Description: Paramètre manquant
++ Response 401
+    + Description: Token invalide
+
+## Matchs [/backend/endpointMatchs.php]
+### Récupérer les informations d'un match [GET]
++ Parameters
+    + id (required, number) - ID du match
+
++ Response 200 (application/json)
+    + Attributes
+        + match (object)
+        + joueurs (array) - Liste des joueurs du match
+        + participants (array) - Liste des participants au match
+
++ Response 400
+    + Description: ID invalide
++ Response 404
+    + Description: Match non trouvé
++ Response 401
+    + Description: Token invalide
+
+## Stats [/backend/endpointStats.php]
+### Récupérer les statistiques des joueurs [GET]
++ Response 200 (application/json)
+    + Attributes
+        + stats (array) - Liste des statistiques des joueurs
+            + idJoueur (number) - ID du joueur
+            + matches (number) - Nombre de matchs joués
+            + buts (number) - Nombre de buts marqués
+
++ Response 400
+    + Description: Paramètre manquant
++ Response 401
+    + Description: Token invalide

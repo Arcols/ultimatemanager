@@ -16,7 +16,7 @@
     
     <div class="main">
         <!-- Inclusion du fichier PHP qui récupère les matchs -->
-        <?php include './../appelsAPI/matchs.php'; ?>
+        <?php include __DIR__ . '/../appelsApi/matchs.php'; ?>
 
         <h1>Gestion des Matchs</h1>
         <!-- Formulaire de filtre pour afficher les matchs selon le type -->
@@ -77,7 +77,7 @@
         </table>
 
         <!-- Formulaire pour ajouter un match -->
-        <form method="POST" action="../appelsAPI/matchs.php">
+        <form method="POST" action="../appelsApi/matchs.php">
             <p>
                 <label for="date_heure">Date </label>
                 <input type="datetime-local" id="date_heure" name="date_heure" required>

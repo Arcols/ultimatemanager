@@ -15,7 +15,7 @@
     
     <main>
         <!-- Inclusion du fichier PHP qui récupère les détails du joueur -->
-        <?php include './../appelsAPI/details_joueur.php'; ?>
+        <?php include __DIR__ . '/../appelsApi/details_joueur.php'; ?>
 
         <!-- Vérification si un joueur a été trouvé -->
         <?php if (!empty($joueur)): ?>

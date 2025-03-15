@@ -1,7 +1,7 @@
 <?php
 
 require_once 'connection_bd.php';
-require_once 'gestionMatchs.php';
+require_once 'gestionFeuilleMatch.php';
 require_once 'function.php';
 require_once 'validate_token.php';
 
