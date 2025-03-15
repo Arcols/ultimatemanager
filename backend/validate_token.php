@@ -2,12 +2,8 @@
 require_once "function.php";
 
 function validate_token($token) {
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
 
     $url = 'https://immolink.alwaysdata.net/authapi.php';
-    $data = array('token' => $token);
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -15,10 +11,11 @@ function validate_token($token) {
     // Set cURL options
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true); // Use POST method
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($token));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $token
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -29,8 +26,7 @@ function validate_token($token) {
 
     if ($result === false) {
         curl_close($ch);
-        deliver_response(500, "Invalid token");
-        exit;
+        return $result;
     }
 
     curl_close($ch);
@@ -38,13 +34,14 @@ function validate_token($token) {
     // Check if the response is valid JSON
     $response = json_decode($result, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
-        deliver_response(500, "Invalid token");
+        return false;
         exit;
     }
 
     if ($http_code !== 200 || $response['status'] !== 200) {
-        deliver_response(500, "Invalid token");
+        return false;
         exit;
     }
+    return true;
 }
 ?>

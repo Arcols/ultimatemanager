@@ -19,4 +19,22 @@ function deliver_response($status_code, $status_message, $data = null) {
     /// Affichage de la réponse (retourné au client)
     echo $json_response;
 }
+
+function getAuthorizationHeader() {
+    $headers = getallheaders();
+    if (isset($headers['Authorization'])) {
+        return $headers['Authorization'];
+    }
+    return null;
+}
+
+function getBearerToken() {
+    $authHeader = getAuthorizationHeader();
+    if ($authHeader) {
+        if (preg_match('/Bearer\s(\S+)/', $authHeader, $trouve)) {
+            return $trouve[1];
+        }
+    }
+    return null;
+}
 ?>

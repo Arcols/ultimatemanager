@@ -44,17 +44,15 @@ switch ($method) {
                 deliver_response(500, 'Erreur serveur.');
             }
         } // le cas où on veut vérifier le token
-        elseif (isset($input['token'])) {
-            $token = $input['token'];
+        else {
+            $token = get_bearer_token();
             $secret = 'coucou_je_suis_secret';
 
-            if (is_jwt_valid($token, $secret)) {
+            if ($token && is_jwt_valid($token, $secret)) {
                 deliver_response(200, 'Token valide.');
             } else {
                 deliver_response(401, 'Token invalide.');
             }
-        } else {
-            deliver_response(400, 'Paramètres requis.');
         }
         break;
 

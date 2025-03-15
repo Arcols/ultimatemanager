@@ -42,7 +42,18 @@
         return $result !== null ? $result : 0;
     }
 
-    function getMatchsGagnés($pdo, $idJoueur) {
+
+    function recupererJoueurs($pdo){
+        try {
+            $stmt = $pdo->query("SELECT Id_joueur, Nom, Prénom, Statut FROM joueur");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+
+function getMatchsGagnés($pdo, $idJoueur) {
         // Récupérer tous les matchs du joueur
         $stmt = $pdo->prepare("SELECT id_match FROM participer WHERE id_joueur = :id");
         $stmt->execute([':id' => $idJoueur]);

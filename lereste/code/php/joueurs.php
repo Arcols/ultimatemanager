@@ -15,7 +15,9 @@ function getJoueurs() {
     curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
+
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -55,7 +57,8 @@ function postJoueur($data) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Set POST fields
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
-        "Accept: application/json"
+        "Accept: application/json",
+        "Authorization: Bearer " . $_SESSION['jwt_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL verification
@@ -101,6 +104,10 @@ try {
             header('Location: ./../pages/joueurs.html.php');
             exit;
         } else {
+            if($response['status'] == 401) {
+                header('Location: ./../pages/connexion.html.php');
+                exit;
+            }
             $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
         }
     } else {
@@ -108,6 +115,10 @@ try {
         if ($response['status'] == 200) {
             $joueurs = $response['data'];
         } else {
+            if($response['status'] == 401) {
+                header('Location: ./../pages/connexion.html.php');
+                exit;
+            }
             $error = "Error " . $response['status'] . ": " . ($response['status_message'] ?? "Pas de message d'erreur");
         }
     }
