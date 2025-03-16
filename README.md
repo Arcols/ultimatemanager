@@ -12,8 +12,6 @@ Pour accéder à la base de données, utilisez les informations suivantes :
 - **Nom d'utilisateur MySQL** : `385401_visiteur`
 - **Mot de passe** : `$iutinfo`
 
-> **Remarque** : Assurez-vous de bien protéger ces informations d'identification et de ne pas les partager publiquement.
-
 ### Structure de la base de données
 
 La base de données est composée de plusieurs tables principales :
@@ -33,7 +31,20 @@ Pour installer et exécuter le projet localement :
     ```
 
 ### Accéder au site
+- URL Du Site : [UltimateManager](https://ultimatemanager.alwaysdata.net)
+- Identifiant : `indi`
+- Mot de passe : `blt`
 
-1. URL Du Site : [UltimateManager](https://ultimatemanager.alwaysdata.net
-2. Identifiant : `indi`
-3. Mot de passe : `blt`
+### Récupérer un token JWT
+Connectez vous à l'api suivante : [UltimateManager API Auth](https://immolink.alwaysdata.net/authapi.php) à l'aide de Postman
+- Effectuez une requête POST avec le body suivant :
+```json
+{
+    "username": "indi",
+    "password": "blt"
+}
+```
+- Vous obtiendrez un token JWT que vous pourrez utiliser pour accéder à l'API
+
+### Utilisation de l'API
+La documentation de l'api est disponible dans le fichier **docAPI.html** présent à la racine du projet
