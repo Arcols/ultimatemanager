@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: https://ultimatemanager.alwaysdata.net/backend
+HOST: https://ultimatemanager.alwaysdata.net/backend/
 
 # ultimatemanager
 
@@ -479,7 +479,7 @@ HOST: https://ultimatemanager.alwaysdata.net/backend
             "status_message":"Invalid or missing ID"
         }
 
-### Modifier la date d'un match [PUT]
+### Modifier un match [PUT]
 
 Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs pour ce match, chaque action peut être faite indépendemment les unes des autres
 
@@ -533,6 +533,38 @@ Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs
             "status_message":"La date du match doit être dans le futur || Impossible de modifier le score d'un match passé || Vous ne pouvez pas modifier les notes d'un match pas encore joué"
         }
 
+### Supprimer un match [DELETE]
++ Parameters
+
+    + id (required, integer) - ID du match à récupérer
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+            
++ Response 200 (application/json)
+
+        {
+            "status_code":200,
+            "status_message":"Match supprimé"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid or missing IDMatch"
+        }
+
+
++ Response 401 (application/json)
+
+        {
+            "status_code":401,
+            "status_message":"Impossible de supprimer un match passé"
+        }
 
 # Group Errors
 
@@ -558,6 +590,3 @@ Ces erreurs peuvent s'appliquer à toutes les requêtes de l'API.
             "status_code": 405,
             "status_message": "Method not allowed"
         }
-
-
-
