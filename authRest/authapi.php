@@ -32,7 +32,7 @@ switch ($method) {
 
                 // Utilisateur reconnu, générer le jeton JWT
                 $headers = ['alg' => 'HS256', 'typ' => 'JWT'];
-                $payload = ['login' => $login, 'exp' => (time() + 3600)];
+                $payload = ['login' => $login, 'exp' => (time() + 86400)];
                 $secret = 'coucou_je_suis_secret';
 
                 $jwt = generate_jwt($headers, $payload, $secret);

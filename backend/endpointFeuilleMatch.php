@@ -50,7 +50,7 @@ switch($http_method){
             if(insertFeuilleMatch($linkpdo, $idMatch, $joueursMatch)){
                 deliver_response(201, "Feuille de match créée");
             }else{
-                deliver_response(401, "Il faut 7 titulaires exactement");
+                deliver_response(400, "Il faut 7 titulaires exactement");
             }
         }else{
             deliver_response(400, "Invalid or missing IDMatch");

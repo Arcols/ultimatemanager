@@ -42,7 +42,7 @@ switch ($http_method) {
             insertJoueur($linkpdo, $numLic, $nom, $prenom, $date_naissance, $taille, $poid, $commentaire, $statut);
             deliver_response(201, "Player created");
         } else {
-            deliver_response(400, "Missing parameters");
+            deliver_response(402, "Missing parameters");
         }
         break;
     default:

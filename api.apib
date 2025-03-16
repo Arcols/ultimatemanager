@@ -1,83 +1,563 @@
-# API Gestion Matchs
+FORMAT: 1A
+HOST: https://ultimatemanager.alwaysdata.net/backend/
 
-## Joueur [/backend/endpointDetailsJoueur.php]
-### Récupérer les détails d'un joueur [GET]
-+ Parameters
-    + id (required, number) - ID du joueur
+# ultimatemanager
+
+
+## Joueurs [/endpointJoueurs.php]
+
+### Récupérer toutes les informations de chaque joueurs [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
 
 + Response 200 (application/json)
-    + Attributes
-        + id (number) - ID du joueur
-        + nom (string) - Nom du joueur
-        + prenom (string) - Prénom du joueur
-        + equipe (string) - Équipe du joueur
 
-+ Response 400
-    + Description: ID invalide
-+ Response 404
-    + Description: Joueur non trouvé
-+ Response 401
-    + Description: Token invalide
+        {
+            "status_code": 200,
+            "status_message": "ok",
+            "data": [
+                {
+                    "Id_joueur": 21,
+                    "Numéro_de_licence": "LIC7890652",
+                    "Nom": "LePers",
+                    "Prénom": "Julien",
+                    "Taille": 158,
+                    "Poid": 31,
+                    "Commentaire": "Se fait ratio par samumu est tienne",
+                    "Statut": "Actif",
+                    "Date_de_naissance": "2024-11-27"
+                },
+                {
+                    ...
+                }
+            ]
+        }
 
-## Feuille Match [/backend/endpointFeuilleMatch.php]
-### Créer ou récupérer une feuille de match [POST, GET]
-+ Parameters
-    + id (required, number) - ID du match
+
+### Créer un nouveau joueur [POST]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+    
+    + Body
+        
+            {
+                "numLic": "123456",
+                "nom": "Doe",
+                "prénom": "John",
+                "date_naissance": "1990-01-01",
+                "taille": 180,
+                "poid": 75,
+                "commentaire": "Optionnel",
+                "statut": "Active"
+            }
+        
 
 + Response 201 (application/json)
-    + Description: Feuille de match créée avec succès
-    + Attributes
-        + idFeuille (number) - ID de la feuille de match
-        + joueurs (array) - Liste des joueurs
-        + score (string) - Score du match
 
-+ Response 400
-    + Description: ID invalide
-+ Response 404
-    + Description: Match non trouvé
+        {
+            "status_code":201,
+            "status_message":"Player created"
+        }
 
-## Joueurs [/backend/endpointJoueurs.php]
-### Récupérer la liste des joueurs [GET]
-+ Response 200 (application/json)
-    + Attributes
-        + joueurs (array) - Liste des joueurs
-            + id (number) - ID du joueur
-            + nom (string) - Nom du joueur
-            + equipe (string) - Équipe du joueur
++ Response 400 (application/json)
 
-+ Response 400
-    + Description: Paramètre manquant
-+ Response 401
-    + Description: Token invalide
+        {
+            "status_code":400,
+            "status_message":"Missing parameters"
+        }
 
-## Matchs [/backend/endpointMatchs.php]
-### Récupérer les informations d'un match [GET]
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid JSON"
+        }
+
+
+## Details Joueurs [/endpointDetailsJoueur.php{?id}]
+
+### Récupérer les informations d'un joueur [GET]
+
 + Parameters
-    + id (required, number) - ID du match
+
+    + id (required, integer) - ID du joueur à récupérer
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
 
 + Response 200 (application/json)
-    + Attributes
-        + match (object)
-        + joueurs (array) - Liste des joueurs du match
-        + participants (array) - Liste des participants au match
 
-+ Response 400
-    + Description: ID invalide
-+ Response 404
-    + Description: Match non trouvé
-+ Response 401
-    + Description: Token invalide
+        {
+            "status_code": 200,
+            "status_message": "ok",
+            "data": {
+                "Id_joueur": 24,
+                "Numéro_de_licence": "LIC7890679",
+                "Nom": "Etienne",
+                "Prénom": "Samuel",
+                "Taille": 1.66,
+                "Poid": 64,
+                "Commentaire": "Est le goat de ce jeu + ratio avec ses tatouages dragons",
+                "Date_de_naissance": "1720-02-12",
+                "Statut": "Actif",
+                "aParticipéAUnMatch": true
+            }
+        }
 
-## Stats [/backend/endpointStats.php]
-### Récupérer les statistiques des joueurs [GET]
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid or missing ID"
+        }
+        
++ Response 404 (application/json)
+
+        {
+            "status_code":404,
+            "status_message":"Player not found"
+        }
+
+### Modifier les informations d'un joueur [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
+    + Body
+    
+            {
+                "id": 24,
+                "licence": "LIC7890679",
+                "taille": 1.66,
+                "poid": 64,
+                "commentaire": "Est le goat de ce jeu + ratio avec ses tatouages dragons",
+                "status": "Active"
+            }
+
 + Response 200 (application/json)
-    + Attributes
-        + stats (array) - Liste des statistiques des joueurs
-            + idJoueur (number) - ID du joueur
-            + matches (number) - Nombre de matchs joués
-            + buts (number) - Nombre de buts marqués
 
-+ Response 400
-    + Description: Paramètre manquant
-+ Response 401
-    + Description: Token invalide
+        {
+            "status_code":200,
+            "status_message":"Player updated"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Missing parameters"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid JSON"
+        }
+
+### Modifier les informations d'un joueur [DELETE]
+
++ Parameters
+
+    + id (required, integer) - ID du joueur à récupérer
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "status_code":200,
+            "status_message":"Player deleted"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid or missing ID"
+        }
+
+
+## Statistiques [/endpointStats.php]
+
+### Récupérer les statistiques de l'équipe et de ses joueurs [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "status_code":200,
+            "status_message":"ok",
+            "data":
+                {
+                "Stats": {
+                    "gagnés": 10,
+                    "nuls": 5,
+                    "perdus": 3,
+                    "totalMatchs": 18,
+                    "pourcentageGagnés": 55.56,
+                    "pourcentageNuls": 27.78,
+                    "pourcentagePerdus": 16.67
+                },
+                "Tab": [
+                    {
+                        "Nom": "Doe",
+                        "Prénom": "John",
+                        "Statut": "Active",
+                        "PostePréféré": "Forward",
+                        "Titularisations": 15,
+                        "Remplacements": 3,
+                        "Evaluation": 7.5,
+                        "MatchsGagnés": "60.00%",
+                        "SelectionConsecutive": 5
+                    },
+                    {
+                        "Nom": "Smith",
+                        "Prénom": "Jane",
+                        "Statut": "Inactive",
+                        "PostePréféré": "Midfielder",
+                        "Titularisations": 10,
+                        "Remplacements": 5,
+                        "Evaluation": 6.8,
+                        "MatchsGagnés": "50.00%",
+                        "SelectionConsecutive": 3
+                    }
+                ]
+            }
+        }
+
+
+## Matchs [/endpointMatch.php]
+
+### Récupérer les matchs effectués et réalisés de l'équipe [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+            
++ Response 200 (application/json)
+
+        {
+            "status_code": 200,
+            "status_message": "ok",
+            "data": {
+                "matchs": [
+                    {
+                        "Id_Match": 32,
+                        "Date_Heure": "0000-00-00 00:00:00",
+                        "Lieu": "Domicile",
+                        "Nom_adversaire": "Les piloupilou",
+                        "Résultat": "10:10"
+                    },
+                    {
+                        "Id_Match": 40,
+                        "Date_Heure": "2000-02-20 17:00:00",
+                        "Lieu": "Domicile",
+                        "Nom_adversaire": "Le tripode B",
+                        "Résultat": "10:0"
+                    },
+                ],
+                "matchsAVenir": [
+                    {
+                        "Id_Match": 42,
+                        "Date_Heure": "2025-03-26 16:06:00",
+                        "Lieu": "Domicile",
+                        "Nom_adversaire": "aefg",
+                        "Résultat": null
+                    },
+                ],
+                "matchsPasses": [
+                    {
+                        "Id_Match": 32,
+                        "Date_Heure": "0000-00-00 00:00:00",
+                        "Lieu": "Domicile",
+                        "Nom_adversaire": "Les piloupilou",
+                        "Résultat": "10:10"
+                    },
+                ]
+            }
+        }
+
+
+### Ajouter un match à l'équipe [POST]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
+    + Body
+    
+            {
+                "date_heure": "2023-10-15T14:30",
+                "nom_adversaires": "Team B",
+                "lieu": "Domicile",
+                "resultatMonEquipe": 2,
+                "resultatAdversaire": 1
+            }
+
++ Response 201 (application/json)
+
+        {
+            "status_code":201,
+            "status_message": "Match created"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Vous devez renseigner les résultats pour un match qui est déjà passé"
+        }
+
+
+## Feuille de Match [/endpointFeuilleMatch.php{?id}]
+        
+### Récupérer la feuille d'un match, les joueurs et leurs postes assignés et les participants du match  [GET]
+
++ Parameters
+
+    + id (required, integer) - ID du match à récupérer
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "status_code":200,
+            "status_message":"ok",
+            "data":
+            {
+                "match": {
+                    "Id_Match": 1,
+                    "Date_Heure": "2023-10-15 14:30:00",
+                    "Lieu": "Stadium A",
+                    "Résultat": "2-1"
+                },
+                "joueurs": [
+                    {
+                        "Id_joueur": 1,
+                        "Numéro_de_licence": "123456",
+                        "Nom": "Doe",
+                        "Prénom": "John",
+                        "Taille": 180,
+                        "Poid": 75,
+                        "Commentaire": "Pas de commentaire",
+                        "Date_de_naissance": "1990-01-01",
+                        "assigned": true,
+                        "poste": "Forward",
+                        "role": "Titulaire"
+                    },
+                    {
+                        "Id_joueur": 2,
+                        "Numéro_de_licence": "654321",
+                        "Nom": "Smith",
+                        "Prénom": "Jane",
+                        "Taille": 170,
+                        "Poid": 65,
+                        "Commentaire": "Pas de commentaire",
+                        "Date_de_naissance": "1992-02-02",
+                        "assigned": false,
+                        "poste": "",
+                        "role": ""
+                    }
+                ],
+                "participants": [
+                    {
+                        "Id_joueur": 1,
+                        "Nom": "Doe",
+                        "Prénom": "John",
+                        "Poste": "Forward",
+                        "Role": "Titulaire",
+                        "Note": 8
+                    },
+                    {
+                        "Id_joueur": 2,
+                        "Nom": "Smith",
+                        "Prénom": "Jane",
+                        "Poste": "Midfielder",
+                        "Role": "Remplaçant",
+                        "Note": 7
+                    }
+                ]
+            }
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid or missing ID"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "status_code":404,
+            "status_message":"Player not found"
+        }
+
+### Ajouter ou modifier les participants d'un match [POST]
+
++ Parameters
+
+    + id (required, integer) - ID du match à récupérer
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
+    + Body
+    
+            {
+                "joueursMatch": [
+                    {
+                        "id": 1,
+                        "poste": "Forward",
+                        "role": "Titulaire"
+                    },
+                    {
+                        "id": 2,
+                        "poste": "Midfielder",
+                        "role": "Remplaçant"
+                    }
+                ]
+            }
+
++ Response 201 (application/json)
+
+        {
+            "status_code":201,
+            "status_message":"Feuille de match créée"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Il faut 7 titulaires exactement"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid or missing ID"
+        }
+
+### Modifier la date d'un match [PUT]
+
+Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs pour ce match, chaque action peut être faite indépendemment les unes des autres
+
++ Parameters
+
+    + id (required, integer) - ID du match à récupérer
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
+    + Body
+    
+            {
+                "nouvelle_date":"2023-10-15T14:30",
+                "score":"2-3",
+                "joueursModifNote": 
+                    [
+                        {
+                            "id": 1,
+                            "note": 8
+                        },
+                        {
+                            "id": 2,
+                            "note": 7
+                        }
+                    ]
+            }
+
++ Response 200 (application/json)
+
+        {
+            "status_code":200,
+            "status_message":"Date du match modifiée || Score modifié || Notes modifiées"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "status_code":400,
+            "status_message":"Invalid or missing ID || Invalid date format 2023-10-15T14:30 "
+        }
+
+
++ Response 401 (application/json)
+
+        {
+            "status_code":401,
+            "status_message":"La date du match doit être dans le futur || Impossible de modifier le score d'un match passé || Vous ne pouvez pas modifier les notes d'un match pas encore joué"
+        }
+
+
+# Group Errors
+
+## Erreurs Globales
+
+Ces erreurs peuvent s'appliquer à toutes les requêtes de l'API.
+
+
+### Unauthorized [401]
+
++ Response 401 (application/json)
+
+        {
+            "status_code": 401,
+            "status_message": "Vous n'avez pas un token valide"
+        }
+
+### Method Not Allowed [405]
+
++ Response 405 (application/json)
+
+        {
+            "status_code": 405,
+            "status_message": "Method not allowed"
+        }
+
+
+

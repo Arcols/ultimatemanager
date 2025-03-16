@@ -43,7 +43,7 @@ switch ($http_method) {
         $licence = $input['licence'] ?? null;
         $taille = $input['taille'] ?? null;
         $poid = $input['poid'] ?? null;
-        $commentaire = $input['commentaire'] ?? null;
+        $commentaire = $input['commentaire'] ?? "Pas de commentaire";
         $status = $input['status'] ?? null;
 
         if ($idJoueur && $licence && $taille && $poid && $commentaire && $status) {
