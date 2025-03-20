@@ -59,34 +59,6 @@ switch ($method) {
             }
         }
         break;
-
-    case 'PUT':
-        if (!isset($input['login']) || !isset($input['mdp'])) {
-            deliver_response(400, 'Paramètres login et mdp requis.');
-            exit;
-        }
-
-        $login = $input['login'];
-        $mdp = $input['mdp'];
-        $cle = "quoicoubeh";
-        $mdp_hache = hash_hmac('sha256', $mdp, $cle);
-
-        try {
-            $pdo = connectionToDB();
-
-            if (check_user_exists($pdo, $login)) {
-                deliver_response(409, 'Utilisateur déjà existant.');
-                exit;
-            }
-
-            insertUser($pdo, $login, $mdp_hache);
-            deliver_response(201, 'Utilisateur créé avec succès.');
-        } catch (Exception $e) {
-            error_log("Erreur serveur: " . $e->getMessage());
-            deliver_response(500, 'Erreur serveur.');
-        }
-        break;
-
     default:
         deliver_response(405, 'Méthode non autorisée.');
         break;

@@ -26,8 +26,3 @@ function check_user_exists($pdo, $login)
     $count = $stmt->fetchColumn();
     return $count > 0;
 }
-
-function insertUser($pdo, $login, $mdp_hache){
-    $stmt = $pdo->prepare("INSERT INTO utilisateurs (login, mdp) VALUES (:login, :mdp)");
-    $stmt->execute([':login' => $login, ':mdp' => $mdp_hache]);
-}
