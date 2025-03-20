@@ -8,6 +8,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 switch ($method) {
     case 'GET' :
+        // Vérifie la présence du token JWT
         if(!get_bearer_token()){
             deliver_response(401, "Vous n'avez pas fourni de token");
             exit;
@@ -15,14 +16,16 @@ switch ($method) {
         $token = get_bearer_token();
         $secret = 'coucou_je_suis_secret';
 
+        // Vérifie la validité du token
         if ($token && is_jwt_valid($token, $secret)) {
             deliver_response(200, 'Token valide.');
         } else {
             deliver_response(401, 'Token invalide.');
         }
         break;
+    
     case 'POST':
-        // le cas où on veut vérifier le login et le mot de passe
+        // Vérifie les identifiants et génère un JWT si valides
         if (isset($input['login']) && isset($input['mdp'])) {
             $login = $input['login'];
             $mdp = $input['mdp'];
@@ -32,6 +35,7 @@ switch ($method) {
             try {
                 $pdo = connectionToDB();
 
+                // Vérifie si l'utilisateur existe
                 if (!check_user_exists($pdo, $login)) {
                     deliver_response(404, 'Utilisateur non trouvé.');
                     exit;
@@ -39,19 +43,20 @@ switch ($method) {
 
                 $user = getUser($pdo, $login);
 
+                // Vérifie si le mot de passe est correct
                 if (!$user || $mdp_hache !== $user['mdp']) {
                     deliver_response(401, 'Identifiant ou mot de passe incorrect.');
                     exit;
                 }
 
-                // Utilisateur reconnu, générer le jeton JWT
+                // Génération du token JWT pour l'utilisateur authentifié
                 $headers = ['alg' => 'HS256', 'typ' => 'JWT'];
                 $payload = ['login' => $login, 'exp' => (time() + 86400)];
                 $secret = 'coucou_je_suis_secret';
 
                 $jwt = generate_jwt($headers, $payload, $secret);
 
-                // Envoyer le jeton JWT
+                // Envoi du token en réponse
                 deliver_response(200, 'OK', ['token' => $jwt]);
             } catch (Exception $e) {
                 error_log("Erreur serveur: " . $e->getMessage());
@@ -61,7 +66,9 @@ switch ($method) {
             deliver_response(400, 'Identifiant ou mot de passe manquant');
         }
         break;
+    
     default:
+        // Méthode HTTP non autorisée
         deliver_response(405, 'Méthode non autorisée.');
         break;
 }
