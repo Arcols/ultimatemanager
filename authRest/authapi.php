@@ -57,16 +57,6 @@ switch ($method) {
                 error_log("Erreur serveur: " . $e->getMessage());
                 deliver_response(500, 'Erreur serveur.');
             }
-        } // le cas où on veut vérifier le token
-        else {
-            $token = get_bearer_token();
-            $secret = 'coucou_je_suis_secret';
-
-            if ($token && is_jwt_valid($token, $secret)) {
-                deliver_response(200, 'Token valide.');
-            } else {
-                deliver_response(401, 'Token invalide.');
-            }
         }
         break;
 
