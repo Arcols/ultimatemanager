@@ -57,6 +57,8 @@ switch ($method) {
                 error_log("Erreur serveur: " . $e->getMessage());
                 deliver_response(500, 'Erreur serveur.');
             }
+        }else{
+            deliver_response(400, 'Identifiant ou mot de passe manquant');
         }
         break;
     default:
