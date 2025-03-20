@@ -10,8 +10,7 @@ function validate_token($token) {
 
     // Set cURL options
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true); // Use POST method
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($token));
+    curl_setopt($ch, CURLOPT_HTTPGET, true); // Use GET method
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Content-Type: application/json",
         "Accept: application/json",

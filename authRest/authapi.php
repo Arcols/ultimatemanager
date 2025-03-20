@@ -7,6 +7,20 @@ $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true);
 
 switch ($method) {
+    case 'GET' :
+        if(!get_bearer_token()){
+            deliver_response(401, "Vous n'avez pas fourni de token");
+            exit;
+        }
+        $token = get_bearer_token();
+        $secret = 'coucou_je_suis_secret';
+
+        if ($token && is_jwt_valid($token, $secret)) {
+            deliver_response(200, 'Token valide.');
+        } else {
+            deliver_response(401, 'Token invalide.');
+        }
+        break;
     case 'POST':
         // le cas où on veut vérifier le login et le mot de passe
         if (isset($input['login']) && isset($input['mdp'])) {
