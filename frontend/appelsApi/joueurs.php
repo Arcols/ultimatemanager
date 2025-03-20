@@ -4,7 +4,7 @@ session_start();
 $joueurs = [];
 $error = null;
 function getJoueurs() {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointJoueurs.php';
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointJoueurs.php';
     // Initialize cURL
     $ch = curl_init($url);
 
@@ -44,7 +44,7 @@ function getJoueurs() {
 }
 
 function postJoueur($data) {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointJoueurs.php';
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointJoueurs.php';
 
     // Initialize cURL
     $ch = curl_init($url);

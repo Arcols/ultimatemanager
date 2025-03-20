@@ -2,7 +2,7 @@
 session_start();
 
 function getMatches(){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointMatchs.php';
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -42,7 +42,7 @@ function getMatches(){
 }
 
 function addMatch($date_heure, $nom_adversaires, $lieu, $resultatMonEquipe, $resultatEquipeAdverse){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointMatchs.php';
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointMatchs.php';
 
     // Initialize cURL
     $ch = curl_init($url);

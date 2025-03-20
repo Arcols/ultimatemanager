@@ -20,7 +20,7 @@ function recupererJoueursSelectionnes() {
 
 function updateDate($data,$id) {
 
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointFeuilleMatch.php?id='.$id;
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointFeuilleMatch.php?id='.$id;
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -61,7 +61,7 @@ function updateDate($data,$id) {
 }
 
 function deleteMatch($id){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointFeuilleMatch.php?id='.$id;
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointFeuilleMatch.php?id='.$id;
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -101,7 +101,7 @@ function deleteMatch($id){
 }
 
 function updateFeuilleMatchWithPlayer($data,$id){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endpointFeuilleMatch.php?id='.$id;
+    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointFeuilleMatch.php?id='.$id;
 
     // Initialize cURL
     $ch = curl_init($url);

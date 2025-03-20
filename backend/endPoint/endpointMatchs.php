@@ -1,9 +1,14 @@
 <?php
 
-require_once 'connection_bd.php';
-require_once 'gestionMatchs.php';
-require_once 'function.php';
-require_once 'validate_token.php';
+require_once '../functions/connection_bd.php';
+require_once '../functions/gestionMatchs.php';
+require_once '../functions/function.php';
+require_once '../functions/validate_token.php';
+
+if(!getBearerToken()){
+    deliver_response(401, "Vous n'avez pas fourni de token");
+    exit;
+}
 
 if(!validate_token(getBearerToken())) {
     deliver_response(401, "Vous n'avez pas un token valide");
