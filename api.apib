@@ -3,7 +3,6 @@ HOST: https://backend-ultimate-manager.alwaysdata.net/backend/endPoint
 
 # ultimatemanager
 
-
 ## Joueurs [/endpointJoueurs.php]
 
 ### Récupérer toutes les informations de chaque joueurs [GET]
@@ -566,13 +565,91 @@ Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs
             "status_message":"Impossible de supprimer un match passé"
         }
 
+
+## Auth API [/authapi.php]
+
+### Valider mon token [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "status_code": 200,
+            "status_message": "Token valide"
+        }
+
++ Response 401  (application/json)
+
+        {
+            "status_code": 401,
+            "status_message": "Vous n'avez pas fourni de token"
+        }
+        
++ Response 401  (application/json)
+
+        {
+            "status_code": 401,
+            "status_message": "Token invalide"
+        }
+        
+### Générer un token [POST]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {token}
+            
+    + Body
+        
+            {
+                "login":indi,
+                "mdp"blt
+            }
+
++ Response 200 (application/json)
+
+        {
+            "status_code": 200,
+            "status_message": "ok",
+            "data":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImluZGkiLCJleHAiOjE3NDI0Njk3NTN9.YAzSP8oe340gQygFM5cBzp6RJ4upHnIdUgm1nGqeXbA"
+        }
+
++ Response 400  (application/json)
+
+        {
+            "status_code": 400,
+            "status_message": "Identifiant ou mot de passe manquant."
+        }
+
++ Response 401  (application/json)
+
+        {
+            "status_code": 401,
+            "status_message": "Identifiant ou mot de passe incorrect."
+        }
+        
++ Response 401  (application/json)
+
+        {
+            "status_code": 404,
+            "status_message": "Utilisateur non trouvé."
+        }
+        
+
+
 # Group Errors
 
 ## Erreurs Globales
 
 Ces erreurs peuvent s'appliquer à toutes les requêtes de l'API.
 
-### Token non renseigné [401]
+### Token invalide [401]
 
 + Response 401 (application/json)
 
