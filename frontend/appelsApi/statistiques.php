@@ -2,7 +2,7 @@
 session_start();
 
 function getStats() {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointStats.php';
+    $url = 'https://backend-ultimate-manager.alwaysdata.net/backend/endPoint/endpointStats.php';
     // Initialize cURL
     $ch = curl_init($url);
 

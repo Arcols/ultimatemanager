@@ -2,7 +2,7 @@
 session_start();
 
 function getJoueursEtMatch($id) {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointFeuilleMatch.php?id='.$id;
+    $url = 'https://backend-ultimate-manager.alwaysdata.net/backend/endPoint/endpointFeuilleMatch.php?id='.$id;
     // Initialize cURL
     $ch = curl_init($url);
 

@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: https://ultimatemanager.alwaysdata.net/backend
+HOST: https://backend-ultimate-manager.alwaysdata.net/backend/endPoint
 
 # ultimatemanager
 
@@ -501,7 +501,7 @@ Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs
                 "joueursModifNote": 
                     [
                         {
-                            "id": 1,
+                            "id": integer,
                             "note": 8
                         },
                         {
@@ -555,7 +555,7 @@ Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs
 
         {
             "status_code":400,
-            "status_message":"Invalid or missing IDMatch"
+            "status_message":"Invalid or missing ID || Invalid date format 2023-10-15T14:30 "
         }
 
 
@@ -572,8 +572,17 @@ Vous pouvez modifier la date d'un match, le score et les notes de chaque joueurs
 
 Ces erreurs peuvent s'appliquer à toutes les requêtes de l'API.
 
+### Token non renseigné [401]
 
-### Unauthorized [401]
++ Response 401 (application/json)
+
+        {
+            "status_code": 401,
+            "status_message": "Vous n'avez pas fourni de token"
+        }
+
+
+### Token invalide [401]
 
 + Response 401 (application/json)
 

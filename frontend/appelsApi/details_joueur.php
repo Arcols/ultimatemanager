@@ -11,7 +11,7 @@ function calculateAge($date_naissance) {
 }
 
 function getJoueurDetails($idJoueur) {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointDetailsJoueur.php?id=' . $idJoueur;
+    $url = 'https://backend-ultimate-manager.alwaysdata.net/backend/endPoint/endpointDetailsJoueur.php?id=' . $idJoueur;
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -51,7 +51,7 @@ function getJoueurDetails($idJoueur) {
 }
 
 function updateJoueurDetails($data) {
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointDetailsJoueur.php';
+    $url = 'https://backend-ultimate-manager.alwaysdata.net/backend/endPoint/endpointDetailsJoueur.php';
 
     // Initialize cURL
     $ch = curl_init($url);
@@ -92,7 +92,7 @@ function updateJoueurDetails($data) {
 }
 
 function deleteJoueur($idJoueur){
-    $url = 'https://ultimatemanager.alwaysdata.net/backend/endPoint/endpointDetailsJoueur.php?id=' . $idJoueur;
+    $url = 'https://backend-ultimate-manager.alwaysdata.net/backend/endPoint/endpointDetailsJoueur.php?id=' . $idJoueur;
 
     // Initialize cURL
     $ch = curl_init($url);
