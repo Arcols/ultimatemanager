@@ -19,4 +19,4 @@ function connectionToDB()
         die("Erreur de connexion à la base de données. Veuillez réessayer plus tard.");
     }
 }
-?>
+

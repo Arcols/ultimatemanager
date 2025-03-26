@@ -2,7 +2,11 @@
 
 UltimateManager est une application de gestion pour l'Ultimate Frisbee, permettant de suivre les joueurs, les matchs et les statistiques des équipes.
 
-## Prise en main
+### Accéder au site
+
+- URL Du Site : [UltimateManager](https://ultimatemanager.alwaysdata.net)
+- Identifiant : `indi`
+- Mot de passe : `blt`
 
 ### Connexion à la base de données
 
@@ -29,11 +33,6 @@ Pour installer et exécuter le projet localement :
    ```bash
    git clone https://github.com/Arcols/UltimateManager.git
     ```
-
-### Accéder au site
-- URL Du Site : [UltimateManager](https://ultimatemanager.alwaysdata.net)
-- Identifiant : `indi`
-- Mot de passe : `blt`
 
 ### Récupérer un token JWT
 Connectez vous à l'api suivante : [UltimateManager API Auth](https://immolink.alwaysdata.net/authapi.php) à l'aide de Postman

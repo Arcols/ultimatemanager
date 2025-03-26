@@ -42,4 +42,4 @@ function getBearerToken() {
     }
     return null; // Si aucun token n'est trouvé, retourne null
 }
-?>
+

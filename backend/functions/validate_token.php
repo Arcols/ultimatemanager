@@ -43,7 +43,7 @@ function validate_token($token) {
         return false; // Retourner false si la réponse n'est pas correcte
         exit;
     }
-
+    
     return true; // Retourner true si le token est valide
 }
-?>
+
